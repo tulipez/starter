@@ -1,0 +1,10 @@
+.mvn/
+.settings/
+bak/
+src/main/resources/webroot/starter/
+src-web-client/starter-component/dist/
+src-web-client/starter-component/node_modules
+target/
+vertx-server/
+.classpath
+.project

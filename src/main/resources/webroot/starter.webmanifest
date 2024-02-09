@@ -1,0 +1,16 @@
+{
+  "name": "Starter",
+  "short_name": "Starter",
+  "description": "Application pour le suivi d'objectifs",
+  "icons": [
+    {
+      "src": "icon-768.png",
+      "sizes": "768x768",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF"
+}
