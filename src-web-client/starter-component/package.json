@@ -5,10 +5,7 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
-    "watch-roll": "tsc-watch --onSuccess \"rollup -c\"",
     "build": "tsc && rollup -c",
-    "toto": "\"tsc --watch --preserveWatchOutput\" ",
-    "start_old": "tsc && rollup -c && concurrently  -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
     "start": "tsc && rollup -c && concurrently -k -r \"wds\" \"tsc-watch --onSuccess \\\"rollup -c\\\"\""
   },
   "dependencies": {
