@@ -53,7 +53,6 @@ export class TzStarter extends LitElement {
 	}
 	
 	render() {
-		
 		return html`
 		${!this.initialized ?
 	      	html``:

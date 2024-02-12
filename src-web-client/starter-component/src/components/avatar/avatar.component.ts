@@ -34,7 +34,6 @@ export class TzAvatar extends LitElement {
 	}
 	
     render() {
-		
 		return html`
 		${!this.userService || !this.userService.currentUser ?
 	      	html``:
