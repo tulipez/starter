@@ -36,67 +36,64 @@ export class TzAvatar extends LitElement {
     render() {
 		
 		return html`
-		${!this.userService ?
+		${!this.userService || !this.userService.currentUser ?
 	      	html``:
-	      	html`${!this.userService.currentUser ?
-		      	html``:
-		      	html`
+	      	html`
 		        
-		        <div>
-			    	<button class="avatar-button" type="button"
-			    		@click="${() => {this.getDrawerAvater().show();}}"
-			    	>
-			    	
-						<sl-avatar
-						  	image="${this.userService.currentUser.picture}"
-						  	loading="lazy"
-						></sl-avatar>
-						
-					</button>
+	        <div>
+		    	<button class="avatar-button" type="button"
+		    		@click="${() => {this.getDrawerAvater().show();}}"
+		    	>
+		    	
+					<sl-avatar
+					  	image="${this.userService.currentUser.picture}"
+					  	loading="lazy"
+					></sl-avatar>
 					
-					<sl-drawer class="drawer-avatar" label="Profil">
+				</button>
+				
+				<sl-drawer class="drawer-avatar" label="Profil">
+				
+					<sl-menu-item
+						value="logout"
+						@click="${() => {this.getDialogConfirmLogout().show();}}"
+					>Se déconnecter
 					
-						<sl-menu-item
-							value="logout"
-							@click="${() => {this.getDialogConfirmLogout().show();}}"
-						>Se déconnecter
+						<sl-icon
+							slot="prefix"
+							library="lucide"
+							name="log-out"
+							style="font-size: 20px;"
+						></sl-icon>
 						
-							<sl-icon
-								slot="prefix"
-								library="lucide"
-								name="log-out"
-								style="font-size: 20px;"
-							></sl-icon>
-							
-						</sl-menu-item>
-						
-						<sl-button
-							slot="footer"
-							variant="primary"
-							@click="${() => {this.getDrawerAvater().hide();}}"
-						>Fermer</sl-button>
+					</sl-menu-item>
 					
-					</sl-drawer>
+					<sl-button
+						slot="footer"
+						variant="primary"
+						@click="${() => {this.getDrawerAvater().hide();}}"
+					>Fermer</sl-button>
+				
+				</sl-drawer>
+				
+				<sl-dialog class="confirm-logout" label="Déconnexion">
+				
+					Voulez-vous continuer?
 					
-					<sl-dialog class="confirm-logout" label="Déconnexion">
+					<sl-button
+						slot="footer"
+						@click="${() => {this.getDialogConfirmLogout().hide();}}"
+					>Annuler</sl-button>
 					
-						Voulez-vous continuer?
-						
-						<sl-button
-							slot="footer"
-							@click="${() => {this.getDialogConfirmLogout().hide();}}"
-						>Annuler</sl-button>
-						
-						<sl-button
-							slot="footer"
-							variant="primary"
-							@click="${this.userService.logout}"
-						>Se déconnecter</sl-button>
-						
-					</sl-dialog>
-				</div>
-				`
-	      	}`
+					<sl-button
+						slot="footer"
+						variant="primary"
+						@click="${this.userService.logout}"
+					>Se déconnecter</sl-button>
+					
+				</sl-dialog>
+			</div>
+			`
       	}`;
     }
 }
