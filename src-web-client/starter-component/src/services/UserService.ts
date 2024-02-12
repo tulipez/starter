@@ -6,12 +6,11 @@ export class UserService {
 	currentUser: User | undefined;
 	
 	async login() {
-		
 		const response = await fetch('/api/user', {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
 		});
 		if (!response.ok) {
 			console.log(await response.text());
@@ -19,15 +18,14 @@ export class UserService {
 		else {
 			this.currentUser = await response.json();
 		}
-		
 	}
 	
 	async logout() {
 		const response = await fetch('/api/logout', {
 		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			headers: {
+				'Content-Type': 'application/json',
+			},
 		});
 		if (!response.ok) {
 			console.log(await response.text());
