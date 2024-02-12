@@ -1,5 +1,5 @@
 import { html, LitElement } from 'lit';
-import { property } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 import '@shoelace-style/shoelace/dist/themes/light.css';
 import '@shoelace-style/shoelace/dist/themes/dark.css';
 import '@shoelace-style/shoelace/dist/components/avatar/avatar.js';
@@ -18,7 +18,8 @@ export class TzMenu extends LitElement {
 	
     static styles = styles;
     
-    @property({ type: Boolean }) darkMode = false;
+    @state()
+    darkMode = false;
 	
 	getDrawerMenu() : SlDrawer {
 		return this.renderRoot?.querySelector('.drawer-menu') as SlDrawer;
@@ -79,7 +80,10 @@ export class TzMenu extends LitElement {
 			
 			<sl-menu-item
 				value="create_starter"
-				@click="${() => {this.getDialogNewStarter().show();}}"
+				@click="${() => {
+					this.getDrawerMenu().hide();
+					this.getDialogNewStarter().show();
+				}}"
 			>Créer un nouveau starter
 				
 				<sl-icon slot="prefix"

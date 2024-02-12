@@ -24,7 +24,7 @@ public class PostQuestHandler {
 		Quest quest = new Quest();
 		quest.setName(name);
 		
-		hibernateDAO.persistQuest(quest).onComplete((AsyncResult<Void> ar) -> {
+		hibernateDAO.persist(quest).onComplete((AsyncResult<Void> ar) -> {
 			if (ar.succeeded()) {
 				JsonObject jsonResult = new JsonObject()
 						.put("id", quest.getId())

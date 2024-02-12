@@ -64,7 +64,7 @@ public class MainVerticle extends AbstractVerticle {
 				ApiHandler apiHandler = new ApiHandler();
 				router.route("/api/*").handler(apiHandler::handle).failureHandler(apiHandler::failureHandle);
 				router.post("/api/quest").handler(new PostQuestHandler(hibernateDAO)::handle);
-				router.get("/api/user").handler(new GetUserHandler(webClient)::handle);
+				router.get("/api/user").handler(new GetUserHandler(webClient, hibernateDAO)::handle);
 
 				GoogleAuthHandlerFactory googleAuthHandlerFactory = new GoogleAuthHandlerFactory(vertx, router, config);
 				router.get("/api/logout").handler(googleAuthHandlerFactory::handleLogout);

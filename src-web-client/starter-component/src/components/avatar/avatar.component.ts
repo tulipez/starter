@@ -1,4 +1,6 @@
 import { html, LitElement } from 'lit';
+import { state } from 'lit/decorators.js';
+import { consume } from '@lit/context';
 import '@shoelace-style/shoelace/dist/themes/light.css';
 import '@shoelace-style/shoelace/dist/themes/dark.css';
 import '@shoelace-style/shoelace/dist/components/avatar/avatar.js';
@@ -13,14 +15,15 @@ import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.com
 
 import styles from './avatar.styles.js';
 
-import User from '../../model/User.js';
-
+import { UserService, userServiceContext } from '../../services/UserService.js';
 
 export class TzAvatar extends LitElement {
 	
     static styles = styles;
     
-    user = {} as User;
+    @consume({context: userServiceContext})
+    @state()
+	private userService: UserService | undefined;
 	
     getDrawerAvater() : SlDrawer {
 		return this.renderRoot?.querySelector('.drawer-avatar') as SlDrawer;
@@ -30,84 +33,70 @@ export class TzAvatar extends LitElement {
 		return this.renderRoot?.querySelector('.confirm-logout') as SlDialog;
 	}
 	
-	async logout() {
-		const response = await fetch('/api/logout', {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		});
-		if (!response.ok) {
-			console.log(await response.text());
-		}
-		else {
-			const resultLogout = await response.json();
-			if(resultLogout && resultLogout.ok) {
-				window.location.href = "/";
-			}
-			else {
-				console.log(`error : ${JSON.stringify(resultLogout)}`);
-			}
-		}
-	}
-    
     render() {
-		if(this.user==null) return html``;
 		
-        return html`
-        <div>
-    	<button class="avatar-button" type="button"
-    		@click="${() => {this.getDrawerAvater().show();}}"
-    	>
-    	
-			<sl-avatar
-			  	image="${this.user.picture}"
-			  	loading="lazy"
-			></sl-avatar>
-			
-		</button>
-		
-		<sl-drawer class="drawer-avatar" label="Profil">
-		
-			<sl-menu-item
-				value="logout"
-				@click="${() => {this.getDialogConfirmLogout().show();}}"
-			>Se déconnecter
-			
-				<sl-icon
-					slot="prefix"
-					library="lucide"
-					name="log-out"
-					style="font-size: 20px;"
-				></sl-icon>
-				
-			</sl-menu-item>
-			
-			<sl-button
-				slot="footer"
-				variant="primary"
-				@click="${() => {this.getDrawerAvater().hide();}}"
-			>Fermer</sl-button>
-		
-		</sl-drawer>
-		
-		<sl-dialog class="confirm-logout" label="Déconnexion">
-		
-			Voulez-vous continuer?
-			
-			<sl-button
-				slot="footer"
-				@click="${() => {this.getDialogConfirmLogout().hide();}}"
-			>Annuler</sl-button>
-			
-			<sl-button
-				slot="footer"
-				variant="primary"
-				@click="${this.logout}"
-			>Se déconnecter</sl-button>
-			
-		</sl-dialog>
-		</div>
-		`;
+		return html`
+		${!this.userService ?
+	      	html``:
+	      	html`${!this.userService.currentUser ?
+		      	html``:
+		      	html`
+		        
+		        <div>
+			    	<button class="avatar-button" type="button"
+			    		@click="${() => {this.getDrawerAvater().show();}}"
+			    	>
+			    	
+						<sl-avatar
+						  	image="${this.userService.currentUser.picture}"
+						  	loading="lazy"
+						></sl-avatar>
+						
+					</button>
+					
+					<sl-drawer class="drawer-avatar" label="Profil">
+					
+						<sl-menu-item
+							value="logout"
+							@click="${() => {this.getDialogConfirmLogout().show();}}"
+						>Se déconnecter
+						
+							<sl-icon
+								slot="prefix"
+								library="lucide"
+								name="log-out"
+								style="font-size: 20px;"
+							></sl-icon>
+							
+						</sl-menu-item>
+						
+						<sl-button
+							slot="footer"
+							variant="primary"
+							@click="${() => {this.getDrawerAvater().hide();}}"
+						>Fermer</sl-button>
+					
+					</sl-drawer>
+					
+					<sl-dialog class="confirm-logout" label="Déconnexion">
+					
+						Voulez-vous continuer?
+						
+						<sl-button
+							slot="footer"
+							@click="${() => {this.getDialogConfirmLogout().hide();}}"
+						>Annuler</sl-button>
+						
+						<sl-button
+							slot="footer"
+							variant="primary"
+							@click="${this.userService.logout}"
+						>Se déconnecter</sl-button>
+						
+					</sl-dialog>
+				</div>
+				`
+	      	}`
+      	}`;
     }
 }

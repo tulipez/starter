@@ -9,13 +9,16 @@
     "start": "tsc && rollup -c && concurrently -k -r \"wds\" \"tsc-watch --onSuccess \\\"rollup -c\\\"\""
   },
   "dependencies": {
+    "@lit/context": "^1.1.0",
     "@shoelace-style/shoelace": "^2.13.1",
     "lit": "^3.1.2"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.9.0",
     "@open-wc/eslint-config": "^12.0.3",
+    "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^14.0.0",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^8.4.0",
     "@stencil/core": "^1.17.4",
     "@typescript-eslint/eslint-plugin": "^6.20.0",

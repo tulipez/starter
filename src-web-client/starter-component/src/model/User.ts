@@ -1,17 +1,17 @@
-export default class User {
+export class User {
 	
-	locale = "" as string;
-	
-    email_verified = false as boolean;
+    name: string = "";
     
-    email = "" as string;
+    given_name: string = "";
     
-    picture = "" as string;
+    family_name: string = "";
     
-    family_name  = "" as string;
+    picture: string = "";
     
-    given_name = "" as string;
+    email: string = "";
     
-    name = "" as string;
+    email_verified: boolean = false;
+    
+	locale: string = "";
     
 }

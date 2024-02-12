@@ -9,6 +9,7 @@ import org.hibernate.reactive.stage.Stage;
 import org.hibernate.service.ServiceRegistry;
 
 import com.tulipez.starter.model.Quest;
+import com.tulipez.starter.model.StarterUser;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -41,6 +42,7 @@ public class HibernateDAO {
 			Configuration hibernateConfiguration = new Configuration();
 			hibernateConfiguration.setProperties(hibernateProperties);
 			hibernateConfiguration.addAnnotatedClass(Quest.class);
+			hibernateConfiguration.addAnnotatedClass(StarterUser.class);
 
 			ServiceRegistry serviceRegistry = new ReactiveServiceRegistryBuilder().applySettings(hibernateConfiguration.getProperties()).build();
 			hibernateSessionFactory = hibernateConfiguration.buildSessionFactory(serviceRegistry).unwrap(Stage.SessionFactory.class);
@@ -49,9 +51,17 @@ public class HibernateDAO {
 		});
 	}
 	
-	public Future<Void> persistQuest(Quest quest) {
+//	public Future<Void> persistQuest(Quest quest) {
+//		CompletionStage<Void> insertionResult = hibernateSessionFactory.withTransaction((session, transaction) -> {
+//			CompletionStage<Void> resultPersist = session.persist(quest);
+//			return resultPersist;
+//        });
+//		return Future.fromCompletionStage(insertionResult);
+//	}
+	
+	public Future<Void> persist(Object object) {
 		CompletionStage<Void> insertionResult = hibernateSessionFactory.withTransaction((session, transaction) -> {
-			CompletionStage<Void> resultPersist = session.persist(quest);
+			CompletionStage<Void> resultPersist = session.persist(object);
 			return resultPersist;
         });
 		return Future.fromCompletionStage(insertionResult);
