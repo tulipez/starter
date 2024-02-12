@@ -59,7 +59,6 @@ export class TzStarter extends LitElement {
 	      	html`${!this.userService.currentUser ?
 		      	html`<tz-login></tz-login>`:
 		      	html`
-		      	
 		      	<div class="application">
 		
 					<div class="top-bar">

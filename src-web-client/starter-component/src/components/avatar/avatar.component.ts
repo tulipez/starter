@@ -38,7 +38,6 @@ export class TzAvatar extends LitElement {
 		${!this.userService || !this.userService.currentUser ?
 	      	html``:
 	      	html`
-		        
 	        <div>
 		    	<button class="avatar-button" type="button"
 		    		@click="${() => {this.getDrawerAvater().show();}}"
