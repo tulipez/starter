@@ -5,21 +5,25 @@ export class UserService {
 	
 	currentUser: User | undefined;
 	
-	async login() {
-		
-		const response = await fetch('/api/user', {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
+	login() {
+		return new Promise<void>((resolve, reject) => {
+			fetch('/api/user', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+	        .then(response => response.ok ? response.json() : undefined)
+	        .then(data => {
+	            this.currentUser = data;
+	            resolve();
+	        })
+	        .catch(error => {
+	            console.error('Error:', error);
+	            reject(new Error("login failed"));
+	        });
 		});
-		if (!response.ok) {
-			console.log(await response.text());
-		}
-		else {
-			this.currentUser = await response.json();
-		}
-		
+
 		// eslint-disable-next-line no-promise-executor-return
 		// await new Promise(resolve => setTimeout(resolve, 5000));
 		/*
@@ -33,6 +37,8 @@ export class UserService {
 		this.currentUser.locale = "fr";
 		*/
 	}
+	
+	
 	
 	async logout() {
 		const response = await fetch('/api/logout', {

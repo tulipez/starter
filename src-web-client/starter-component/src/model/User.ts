@@ -13,5 +13,7 @@ export class User {
     email_verified: boolean = false;
     
 	locale: string = "";
+	
+	dark_mode: boolean = false;
     
 }

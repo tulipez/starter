@@ -11,6 +11,7 @@ import com.tulipez.starter.web.SslRedirectServer;
 import com.tulipez.starter.web.api.ApiHandler;
 import com.tulipez.starter.web.api.GetUserHandler;
 import com.tulipez.starter.web.api.PostQuestHandler;
+import com.tulipez.starter.web.api.PutUserHandler;
 import com.tulipez.starter.web.api.SubDomainHandler;
 import com.tulipez.starter.web.auth.GoogleAuthHandlerFactory;
 
@@ -70,6 +71,7 @@ public class MainVerticle extends AbstractVerticle {
 			router.route("/api/*").handler(apiHandler::handle).failureHandler(apiHandler::failureHandle);
 			router.post("/api/quest").handler(new PostQuestHandler(hibernateFacade)::handle);
 			router.get("/api/user").handler(new GetUserHandler(webClient, userDAO)::handle);
+			router.put("/api/user").handler(new PutUserHandler(userDAO)::handle);
 			router.get("/api/logout").handler(googleAuthHandlerFactory::handleLogout);
 			router.get("/auth").handler(googleAuthHandlerFactory.getHandler());
 			router.get("/auth").handler(context -> context.redirect("/"));

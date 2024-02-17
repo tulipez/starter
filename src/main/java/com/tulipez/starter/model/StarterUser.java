@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.hibernate.annotations.NaturalId;
 
+import io.vertx.core.json.JsonObject;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,6 +51,10 @@ public class StarterUser {
 	private Boolean email_verified;
 	public Boolean getEmail_verified() { return email_verified; }
 	public void setEmail_verified(Boolean email_verified) { this.email_verified = email_verified; }
+
+	private Boolean dark_mode;
+	public Boolean getDark_mode() { return dark_mode; }
+	public void setDark_mode(Boolean dark_mode) { this.dark_mode = dark_mode; }
 	
 	private String locale;
 	public String getLocale() { return locale; }
@@ -67,8 +72,17 @@ public class StarterUser {
 		return id.equals(other.id);
 	}
 	
-	public String toString() {
-		return name + "**" + given_name;
+	//TODO externaliser/automatiser/generaliser
+	public StarterUser updateFrom(JsonObject userSpecif) {
+		if(userSpecif.containsKey("name")) this.setName(userSpecif.getString("name"));
+		if(userSpecif.containsKey("given_name")) this.setGiven_name(userSpecif.getString("given_name"));
+		if(userSpecif.containsKey("family_name")) this.setFamily_name(userSpecif.getString("family_name"));
+		if(userSpecif.containsKey("picture")) this.setPicture(userSpecif.getString("picture"));
+		if(userSpecif.containsKey("email")) this.setEmail(userSpecif.getString("email"));
+		if(userSpecif.containsKey("email_verified")) this.setEmail_verified(userSpecif.getBoolean("email_verified"));
+		if(userSpecif.containsKey("locale")) this.setLocale(userSpecif.getString("locale"));
+		if(userSpecif.containsKey("dark_mode")) this.setDark_mode(userSpecif.getBoolean("dark_mode"));
+		return this;
 	}
 	
 }

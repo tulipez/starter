@@ -47,9 +47,12 @@ export class TzStarter extends LitElement {
 		this.init();
 	}
 	
-	async init() {
-		await this.userService.login();
-		this.initialized = true;
+	init() {
+		this.userService.login().then(() => {
+			this.initialized = true
+		}).catch((error) => {
+			console.error(error);
+		});
 	}
 	
 	render() {

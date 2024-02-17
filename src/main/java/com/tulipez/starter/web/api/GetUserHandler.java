@@ -32,7 +32,7 @@ public class GetUserHandler {
 	
 	public void handle(RoutingContext context) {
 		requestUserSpecif(context.user())
-			.compose(userSpecif -> userDAO.get(userSpecif))
+			.compose(userSpecif -> userDAO.getUser(userSpecif))
 			.onSuccess(starterUser -> RoutingContextUtils.endJson(context, JsonObject.mapFrom(starterUser)))
 			.onFailure(err -> RoutingContextUtils.endError(context, err));
 	}
