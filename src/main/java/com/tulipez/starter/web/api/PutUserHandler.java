@@ -1,6 +1,7 @@
 package com.tulipez.starter.web.api;
 
 import com.tulipez.starter.dao.UserDAO;
+import com.tulipez.starter.model.StarterUser;
 import com.tulipez.starter.util.RoutingContextUtils;
 
 import io.vertx.core.json.JsonObject;
@@ -15,9 +16,9 @@ public class PutUserHandler {
 	}
 	
 	public void handle(RoutingContext context) {
-//		userDAO.getUser(userSpecif)
-//			.onSuccess(starterUser -> RoutingContextUtils.endJson(context, JsonObject.mapFrom(starterUser)))
-//			.onFailure(err -> RoutingContextUtils.endError(context, err));
+		userDAO.saveUser(context.body().asJsonObject().mapTo(StarterUser.class))
+			.onSuccess(starterUser -> RoutingContextUtils.endJson(context, JsonObject.mapFrom(starterUser)))
+			.onFailure(err -> RoutingContextUtils.endError(context, err));
 	}
 	
 }

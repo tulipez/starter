@@ -1,6 +1,7 @@
 package com.tulipez.starter.web.api;
 
 import com.tulipez.starter.dao.UserDAO;
+import com.tulipez.starter.model.StarterUser;
 import com.tulipez.starter.util.RoutingContextUtils;
 
 import io.vertx.core.Future;

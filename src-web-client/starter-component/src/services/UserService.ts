@@ -1,21 +1,22 @@
+/* eslint-disable lines-between-class-members */
 import { createContext } from '@lit/context';
 import { User } from '../model/User.js';
 
 export class UserService {
 	
-	currentUser: User | undefined;
-	
+	private _currentUser: User | undefined;
+	get currentUser(): User | undefined { return this._currentUser; }
+
 	login() {
+		
 		return new Promise<void>((resolve, reject) => {
 			fetch('/api/user', {
 				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: { 'Content-Type': 'application/json' }
 			})
 	        .then(response => response.ok ? response.json() : undefined)
 	        .then(data => {
-	            this.currentUser = data;
+	            this._currentUser = data;
 	            resolve();
 	        })
 	        .catch(error => {
@@ -23,42 +24,56 @@ export class UserService {
 	            reject(new Error("login failed"));
 	        });
 		});
-
-		// eslint-disable-next-line no-promise-executor-return
-		// await new Promise(resolve => setTimeout(resolve, 5000));
+		
 		/*
-		this.currentUser = new User();
-		this.currentUser.name = "zulut";
-		this.currentUser.given_name = "zulut";
-		this.currentUser.family_name = "zulut";
-		this.currentUser.picture = "https://picsum.photos/18/18";
-		this.currentUser.email = "zulut@zulut.fr";
-		this.currentUser.email_verified = true;
-		this.currentUser.locale = "fr";
+		return new Promise<void>(resolve => {
+			this._currentUser = {
+				name : "zulut",
+				given_name : "zulut",
+				family_name : "zulut",
+				picture : "https://picsum.photos/18/18",
+				email : "zulut@zulut.fr",
+				email_verified : true,
+				locale : "fr",
+			} as User;
+			resolve();
+		});
 		*/
 	}
 	
-	
-	
-	async logout() {
-		const response = await fetch('/api/logout', {
-		method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
+	saveCurrentUser() {
+		return new Promise<void>((resolve, reject) => {
+			fetch('/api/user', {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(this.currentUser)
+			})
+	        .then(response => {
+				if(!response.ok) reject(new Error("saveCurrentUser failed"));
+				else resolve();
+			})
+	        .catch(error => {
+	            console.error('Error:', error);
+	            reject(new Error("saveCurrentUser failed"));
+	        });
 		});
-		if (!response.ok) {
-			console.log(await response.text());
-		}
-		else {
-			const resultLogout = await response.json();
-			if(resultLogout && resultLogout.ok) {
-				window.location.href = "/";
-			}
-			else {
-				console.log(`error : ${JSON.stringify(resultLogout)}`);
-			}
-		}
+	}
+	
+	logout() {
+		return new Promise<void>((resolve, reject) => {
+			fetch('/api/logout', {
+				method: 'GET',
+				headers: { 'Content-Type': 'application/json' }
+			})
+	        .then(response => response.ok ? response.json() : undefined)
+	        .then(() => {
+	            window.location.href = "/";
+	        })
+	        .catch(error => {
+	            console.error('Error:', error);
+	            reject(new Error("login failed"));
+	        });
+		});
 	}
 	
 }

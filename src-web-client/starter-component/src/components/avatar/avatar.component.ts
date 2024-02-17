@@ -23,7 +23,7 @@ export class TzAvatar extends LitElement {
     
     @consume({context: userServiceContext})
     @state()
-	private userService: UserService | undefined;
+	private userService?: UserService;
 	
     getDrawerAvater() : SlDrawer {
 		return this.renderRoot?.querySelector('.drawer-avatar') as SlDrawer;
@@ -35,7 +35,7 @@ export class TzAvatar extends LitElement {
 	
     render() {
 		return html`
-		${!this.userService || !this.userService.currentUser ?
+		${!this.userService?.currentUser ?
 	      	html``:
 	      	html`
 	        <div>
@@ -44,7 +44,7 @@ export class TzAvatar extends LitElement {
 		    	>
 		    	
 					<sl-avatar
-					  	image="${this.userService.currentUser.picture}"
+					  	image="${this.userService?.currentUser.picture}"
 					  	loading="lazy"
 					></sl-avatar>
 					
@@ -86,7 +86,7 @@ export class TzAvatar extends LitElement {
 					<sl-button
 						slot="footer"
 						variant="primary"
-						@click="${this.userService.logout}"
+						@click="${this.userService?.logout}"
 					>Se déconnecter</sl-button>
 					
 				</sl-dialog>

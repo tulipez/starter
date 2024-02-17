@@ -1,5 +1,6 @@
 import { html, LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
+import { consume } from '@lit/context';
 import '@shoelace-style/shoelace/dist/themes/light.css';
 import '@shoelace-style/shoelace/dist/themes/dark.css';
 import '@shoelace-style/shoelace/dist/components/avatar/avatar.js';
@@ -14,12 +15,26 @@ import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.com
 
 import styles from './menu.styles.js';
 
+import { UserService, userServiceContext } from '../../services/UserService.js';
+
 export class TzMenu extends LitElement {
 	
     static styles = styles;
     
+    @consume({context: userServiceContext})
     @state()
-    darkMode = false;
+	private userService?: UserService;
+	
+	@state()
+	set darkMode(value: boolean) {
+		const currentUser = this.userService?.currentUser;
+		if(currentUser) currentUser.dark_mode = value;
+	}
+	
+	get darkMode() : boolean {
+		const currentUser = this.userService?.currentUser;
+		return currentUser ? currentUser.dark_mode : false;
+	}
 	
 	getDrawerMenu() : SlDrawer {
 		return this.renderRoot?.querySelector('.drawer-menu') as SlDrawer;
@@ -34,7 +49,6 @@ export class TzMenu extends LitElement {
 	}
 	
 	toggleDarkMode() {
-		
 		const htmlTag = document.querySelector('html') as HTMLElement;
 		const bodyTag = document.querySelector('body') as HTMLElement;
 		
@@ -52,6 +66,8 @@ export class TzMenu extends LitElement {
 			bodyTag.classList.remove('sl-theme-light');
 			this.darkMode = true;
 		}
+		
+		this.userService?.saveCurrentUser();
 	}
 	
     render() {

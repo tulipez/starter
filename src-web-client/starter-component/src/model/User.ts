@@ -1,19 +1,29 @@
+/* eslint-disable lines-between-class-members */
 export class User {
 	
-    name: string = "";
+    private _name: string = "";
+    public get name(): string { return this._name; }
     
-    given_name: string = "";
+    private _given_name: string = "";
+    public get given_name(): string { return this._given_name; }
     
-    family_name: string = "";
+    private _family_name: string = "";
+    public get family_name(): string { return this._family_name; }
     
-    picture: string = "";
+    private _picture: string = "";
+    public get picture(): string { return this._picture; }
     
-    email: string = "";
+    private _email: string = "";
+    public get email(): string { return this._email; }
     
-    email_verified: boolean = false;
+    private _email_verified: boolean = false;
+    public get email_verified(): boolean { return this._email_verified; }
     
-	locale: string = "";
+	private _locale: string = "";
+    public get locale(): string { return this._locale; }
 	
-	dark_mode: boolean = false;
+	private _dark_mode: boolean = false;
+    public get dark_mode(): boolean { return this._dark_mode; }
+    public set dark_mode(value: boolean) { this._dark_mode = value; }
     
 }
