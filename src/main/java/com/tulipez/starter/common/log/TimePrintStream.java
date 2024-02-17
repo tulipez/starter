@@ -4,7 +4,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import com.tulipez.starter.common.FreeMobileSmsSender;
-import com.tulipez.starter.util.DateUtil;
+import com.tulipez.starter.util.DateUtils;
 
 public class TimePrintStream extends PrintStream {
 	
@@ -31,7 +31,7 @@ public class TimePrintStream extends PrintStream {
 			if(!s.startsWith("\tat ")) {
 
 				long currentTimeMillis = System.currentTimeMillis();
-				print(DateUtil.dateFormat_millis.format(currentTimeMillis) + " ");
+				print(DateUtils.dateFormat_millis.format(currentTimeMillis) + " ");
 
 				if(freeMobileSmsSender!=null) {
 					if(lastSmsTime==null || currentTimeMillis - lastSmsTime > minSmsTimeInterval) {
@@ -52,7 +52,7 @@ public class TimePrintStream extends PrintStream {
 			if(!s.startsWith("\tat ")) {
 
 				long currentTimeMillis = System.currentTimeMillis();
-				print(DateUtil.dateFormat_millis.format(currentTimeMillis) + " ");
+				print(DateUtils.dateFormat_millis.format(currentTimeMillis) + " ");
 
 				if(freeMobileSmsSender!=null) {
 					if(lastSmsTime==null || currentTimeMillis - lastSmsTime > minSmsTimeInterval) {

@@ -3,7 +3,7 @@ package com.tulipez.starter.util;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-public class DateUtil {
+public class DateUtils {
 	
 	public static final SimpleDateFormat dateFormat_millis = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
 	public static final SimpleDateFormat dateFormat_millis_UTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
