@@ -48,29 +48,37 @@ export class TzMenu extends LitElement {
 		return this.renderRoot?.querySelector('.dialog-create-starter') as SlDialog;
 	}
 	
-	toggleDarkMode() {
+	// TODO faire un darkModeController
+	// ou refaire un darkMode qui marche correctement...
+	applyDarkMode() {
 		const htmlTag = document.querySelector('html') as HTMLElement;
 		const bodyTag = document.querySelector('body') as HTMLElement;
 		
-		if (this.darkMode) {
+		if (!this.darkMode) {
 			htmlTag.classList.remove('sl-theme-dark');
 			htmlTag.classList.add('sl-theme-light');
 			bodyTag.classList.remove('sl-theme-dark');
 			bodyTag.classList.add('sl-theme-light');
-			this.darkMode = false;
 		}
 		else {
 			htmlTag.classList.add('sl-theme-dark');
 			htmlTag.classList.remove('sl-theme-light');
 			bodyTag.classList.add('sl-theme-dark');
 			bodyTag.classList.remove('sl-theme-light');
-			this.darkMode = true;
 		}
-		
+	}
+	
+	toggleDarkMode() {
+		this.darkMode = !this.darkMode;
+		this.applyDarkMode();
 		this.userService?.saveCurrentUser();
 	}
 	
     render() {
+		
+		// TODO en attendant le darkModeController
+		this.applyDarkMode();
+		
         return html`
     	<sl-icon-button
 			@click="${() => {this.getDrawerMenu().show();}}"
