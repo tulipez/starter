@@ -46,10 +46,10 @@ export class TzStarter extends LitElement {
 		super();
 		this.init();
 	}
-	
+
 	init() {
-		this.userService.login().then(() => {
-			this.initialized = true
+		this.userService.loadCurrentUser().then(() => {
+			this.initialized = true;
 		}).catch((error) => {
 			console.error(error);
 		});
@@ -63,17 +63,13 @@ export class TzStarter extends LitElement {
 		      	html`<tz-login></tz-login>`:
 		      	html`
 		      	<div class="application">
-		
 					<div class="top-bar">
 						<tz-menu></tz-menu>
 						<tz-avatar></tz-avatar>
 					</div>
-				
 					<div class="app-content"></div>
-				
 				</div>`
 	      	}`
       	}`;
-
 	}
 }

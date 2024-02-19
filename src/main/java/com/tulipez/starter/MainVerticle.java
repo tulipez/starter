@@ -72,9 +72,13 @@ public class MainVerticle extends AbstractVerticle {
 			router.post("/api/quest").handler(new PostQuestHandler(hibernateFacade)::handle);
 			router.get("/api/user").handler(new GetUserHandler(webClient, userDAO)::handle);
 			router.put("/api/user").handler(new PutUserHandler(userDAO)::handle);
-			router.get("/api/logout").handler(googleAuthHandlerFactory::handleLogout);
-			router.get("/auth").handler(googleAuthHandlerFactory.getHandler());
-			router.get("/auth").handler(context -> context.redirect("/"));
+
+			router.get("/login").handler(googleAuthHandlerFactory.getHandler());
+			router.get("/login").handler(context -> context.redirect("/"));
+			
+			router.get("/logout").handler(googleAuthHandlerFactory::handleLogout);
+			router.get("/logout").handler(context -> context.redirect("/"));
+			
 			router.get("/*").handler(StaticHandler.create().setCachingEnabled(false));
 
 			//// startList

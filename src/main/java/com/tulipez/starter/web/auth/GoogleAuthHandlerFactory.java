@@ -28,26 +28,16 @@ public class GoogleAuthHandlerFactory {
 	}
 	
 	public void handleLogout(RoutingContext context) {
-		
 		authProvider.revoke(context.user(), "access_token")
 		.onSuccess(v -> {
-			
 			context.clearUser();
-			
-			JsonObject body = new JsonObject();
-			body.put("ok", "true");
-			context.response()
-				.putHeader("Content-Type", "application/json; charset=UTF8")
-				.end(body.encode());
-			
+			context.next();
 		})
 		.onFailure(err -> {
-			
 			context.response().end("ERROR revoke access_token : " + err.getMessage());
 			err.printStackTrace();
-			
+			context.next();
 		});
-		
 	}
 	
 	public OAuth2AuthHandler getHandler() {

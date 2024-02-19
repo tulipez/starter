@@ -1,7 +1,6 @@
 package com.tulipez.starter.web.api;
 
 import com.tulipez.starter.dao.UserDAO;
-import com.tulipez.starter.model.StarterUser;
 import com.tulipez.starter.util.RoutingContextUtils;
 
 import io.vertx.core.Future;
@@ -34,7 +33,10 @@ public class GetUserHandler {
 	public void handle(RoutingContext context) {
 		requestUserSpecif(context.user())
 			.compose(userSpecif -> userDAO.getUser(userSpecif))
-			.onSuccess(starterUser -> RoutingContextUtils.endJson(context, JsonObject.mapFrom(starterUser)))
+			.onSuccess(starterUser -> {
+				context.put("starter-user", starterUser);
+				RoutingContextUtils.endJson(context, JsonObject.mapFrom(starterUser));
+			})
 			.onFailure(err -> RoutingContextUtils.endError(context, err));
 	}
 	

@@ -5,10 +5,9 @@ import { User } from '../model/User.js';
 export class UserService {
 	
 	private _currentUser: User | undefined;
-	get currentUser(): User | undefined { return this._currentUser; }
-
-	login() {
-		
+	get currentUser() { return this._currentUser; }
+	
+	loadCurrentUser() {
 		return new Promise<void>((resolve, reject) => {
 			fetch('/api/user', {
 				method: 'GET',
@@ -24,21 +23,6 @@ export class UserService {
 	            reject(new Error("login failed"));
 	        });
 		});
-		
-		/*
-		return new Promise<void>(resolve => {
-			this._currentUser = {
-				name : "zulut",
-				given_name : "zulut",
-				family_name : "zulut",
-				picture : "https://picsum.photos/18/18",
-				email : "zulut@zulut.fr",
-				email_verified : true,
-				locale : "fr",
-			} as User;
-			resolve();
-		});
-		*/
 	}
 	
 	saveCurrentUser() {
@@ -46,7 +30,7 @@ export class UserService {
 			fetch('/api/user', {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(this.currentUser)
+				body: JSON.stringify(this._currentUser)
 			})
 	        .then(response => {
 				if(!response.ok) reject(new Error("saveCurrentUser failed"));
@@ -59,22 +43,30 @@ export class UserService {
 		});
 	}
 	
-	logout() {
-		return new Promise<void>((resolve, reject) => {
-			fetch('/api/logout', {
-				method: 'GET',
-				headers: { 'Content-Type': 'application/json' }
-			})
-	        .then(response => response.ok ? response.json() : undefined)
-	        .then(() => {
-	            window.location.href = "/";
-	        })
-	        .catch(error => {
-	            console.error('Error:', error);
-	            reject(new Error("login failed"));
-	        });
-		});
+	login() {
+		window.location.href="/login";
 	}
+	
+	logout() {
+		window.location.href="/logout";
+	}
+	
+	
+	
+	/*
+	return new Promise<void>(resolve => {
+		this._currentUser = {
+			name : "zulut",
+			given_name : "zulut",
+			family_name : "zulut",
+			picture : "https://picsum.photos/18/18",
+			email : "zulut@zulut.fr",
+			email_verified : true,
+			locale : "fr",
+		} as User;
+		resolve();
+	});
+	*/
 	
 }
 export const userServiceContext = createContext<UserService>('userService');
