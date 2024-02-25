@@ -15,36 +15,43 @@ import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.com
 
 import styles from './menu.styles.js';
 
-import { UserService, userServiceContext } from '../../services/UserService.js';
+import { WorkspaceService, workspaceServiceContext } from '../../services/WorkspaceService.js';
+import { ActionService, actionServiceContext } from '../../services/ActionService.js';
 
 export class TzMenu extends LitElement {
 	
     static styles = styles;
-    
-    @consume({context: userServiceContext})
+	
+    @consume({context: workspaceServiceContext})
     @state()
-	private userService?: UserService;
+	private workspaceService?: WorkspaceService;
+	
+    @consume({context: actionServiceContext})
+    @state()
+	private actionService?: ActionService;
 	
 	@state()
 	set darkMode(value: boolean) {
-		const currentUser = this.userService?.currentUser;
-		if(currentUser) currentUser.dark_mode = value;
+		const currentWorkspace = this.workspaceService?.currentWorkspace;
+		if(currentWorkspace) {
+			currentWorkspace.dark_mode = value;
+		}
 	}
 	
 	get darkMode() : boolean {
-		const currentUser = this.userService?.currentUser;
-		return currentUser ? currentUser.dark_mode : false;
+		const currentWorkspace = this.workspaceService?.currentWorkspace;
+		return currentWorkspace ? currentWorkspace.dark_mode : false;
 	}
 	
 	getDrawerMenu() : SlDrawer {
 		return this.renderRoot?.querySelector('.drawer-menu') as SlDrawer;
 	}
 	
-	getDrawerNewStarter() : SlDrawer {
+	getDrawerNewAction() : SlDrawer {
 		return this.renderRoot?.querySelector('.drawer-create-starter') as SlDrawer;
 	}
 	
-	getDialogNewStarter() : SlDialog {
+	getDialogNewAction() : SlDialog {
 		return this.renderRoot?.querySelector('.dialog-create-starter') as SlDialog;
 	}
 	
@@ -71,7 +78,17 @@ export class TzMenu extends LitElement {
 	toggleDarkMode() {
 		this.darkMode = !this.darkMode;
 		this.applyDarkMode();
-		this.userService?.saveCurrentUser();
+		this.workspaceService?.saveCurrentWorkspace();
+	}
+	
+	createAction() {
+		this.getDialogNewAction().hide();
+		this.actionService?.create({name: "toto"}).then(action => {
+			console.log(action.id);
+			console.log(action.name);
+		}).catch((error) => {
+			console.error(error);
+		});
 	}
 	
     render() {
@@ -106,9 +123,9 @@ export class TzMenu extends LitElement {
 				value="create_starter"
 				@click="${() => {
 					this.getDrawerMenu().hide();
-					this.getDialogNewStarter().show();
+					this.getDialogNewAction().show();
 				}}"
-			>Créer un nouveau starter
+			>Créer une nouvelle action
 				
 				<sl-icon slot="prefix"
 					library="lucide"
@@ -136,7 +153,7 @@ export class TzMenu extends LitElement {
 			<sl-button
 				slot="footer"
 				variant="primary"
-				@click="${() => {this.getDrawerNewStarter().hide();}}"
+				@click="${() => {this.getDrawerNewAction().hide();}}"
 			>Créer</sl-button>
 		
 		</sl-drawer>
@@ -150,13 +167,13 @@ export class TzMenu extends LitElement {
 			
 			<sl-button
 				slot="footer"
-				@click="${() => {this.getDialogNewStarter().hide();}}"
+				@click="${() => {this.getDialogNewAction().hide();}}"
 			>Annuler</sl-button>
 			
 			<sl-button
 				slot="footer"
 				variant="primary"
-				@click="${() => {this.getDialogNewStarter().hide();}}"
+				@click="${this.createAction}"
 			>Enregistrer</sl-button>
 		
 		</sl-dialog>

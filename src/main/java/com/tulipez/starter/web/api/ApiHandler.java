@@ -10,9 +10,7 @@ public class ApiHandler {
 
 	public void handle(RoutingContext context) {
 		User user = context.user();
-		if(user==null) {
-			context.fail(403);
-		}
+		if(user==null) context.fail(403);
 		else {
 			context.next();
 		}

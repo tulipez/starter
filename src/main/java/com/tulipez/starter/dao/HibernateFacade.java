@@ -1,20 +1,23 @@
 package com.tulipez.starter.dao;
 
 import java.util.Properties;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 
 import org.hibernate.cfg.Configuration;
 import org.hibernate.reactive.provider.ReactiveServiceRegistryBuilder;
 import org.hibernate.reactive.stage.Stage;
+import org.hibernate.reactive.stage.Stage.Session;
 import org.hibernate.service.ServiceRegistry;
 
+import com.tulipez.starter.model.Action;
 import com.tulipez.starter.model.StarterUser;
+import com.tulipez.starter.model.Workspace;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 
 public class HibernateFacade {
 	
@@ -25,10 +28,6 @@ public class HibernateFacade {
 	public HibernateFacade(Vertx vertx, JsonObject config) {
 		this.vertx = vertx;
 		this.config = config;
-	}
-	
-	public Stage.SessionFactory getSessionFactory() {
-		return sessionFactory;
 	}
 	
 	public Future<Void> init() {
@@ -47,6 +46,8 @@ public class HibernateFacade {
 			Configuration hibernateConfiguration = new Configuration();
 			hibernateConfiguration.setProperties(hibernateProperties);
 			hibernateConfiguration.addAnnotatedClass(StarterUser.class);
+			hibernateConfiguration.addAnnotatedClass(Workspace.class);
+			hibernateConfiguration.addAnnotatedClass(Action.class);
 
 			ServiceRegistry serviceRegistry = new ReactiveServiceRegistryBuilder().applySettings(hibernateConfiguration.getProperties()).build();
 			sessionFactory = hibernateConfiguration.buildSessionFactory(serviceRegistry).unwrap(Stage.SessionFactory.class);
@@ -55,23 +56,13 @@ public class HibernateFacade {
 		});
 	}
 	
-	public <T> Future<T> findByAttributeValue(Class<T> resultClass, String attributeName, Object attributeValue) {
-		return Future.fromCompletionStage(sessionFactory.withTransaction(session -> {
-			CriteriaBuilder criteriaBuilder = sessionFactory.getCriteriaBuilder();
-			CriteriaQuery<T> query = criteriaBuilder.createQuery(resultClass);
-			Root<T> fromRoot = query.from(resultClass);
-			query.where(criteriaBuilder.equal(fromRoot.get(attributeName), attributeValue));
-			return session.createQuery(query).getSingleResultOrNull();
-        }));
+	public CriteriaBuilder getCriteriaBuilder() {
+		return sessionFactory.getCriteriaBuilder();
 	}
 	
-	public <T> Future<T> persist(T object) {
-		return Future.fromCompletionStage(sessionFactory.withTransaction(session -> session.persist(object)))
-				.compose(v -> Future.succeededFuture(object));
-	}
-	
-	public <T> Future<T> merge(T object) {
-		return Future.fromCompletionStage(sessionFactory.withTransaction(session -> session.merge(object)));
+	public <T> Future<T> withTransaction(Function<Session, CompletionStage<T>> work) {
+		return Future.fromCompletionStage(sessionFactory.withTransaction(
+				session -> work.apply(session)));
 	}
 	
 }

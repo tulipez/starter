@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tulipez.starter.common.log.StdLogger;
+import com.tulipez.starter.dao.ActionDAO;
 import com.tulipez.starter.dao.HibernateFacade;
 import com.tulipez.starter.dao.UserDAO;
+import com.tulipez.starter.dao.WorkspaceDAO;
 import com.tulipez.starter.web.SslRedirectServer;
 import com.tulipez.starter.web.api.ApiHandler;
 import com.tulipez.starter.web.api.GetUserHandler;
-import com.tulipez.starter.web.api.PostQuestHandler;
-import com.tulipez.starter.web.api.PutUserHandler;
+import com.tulipez.starter.web.api.PostActionHandler;
+import com.tulipez.starter.web.api.PutWorkspaceHandler;
 import com.tulipez.starter.web.api.SubDomainHandler;
 import com.tulipez.starter.web.auth.GoogleAuthHandlerFactory;
 
@@ -21,7 +23,6 @@ import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.PemKeyCertOptions;
@@ -61,6 +62,8 @@ public class MainVerticle extends AbstractVerticle {
 			HibernateFacade hibernateFacade = new HibernateFacade(vertx, config);
 			ApiHandler apiHandler = new ApiHandler();
 			UserDAO userDAO = new UserDAO(hibernateFacade);
+			WorkspaceDAO workspaceDAO = new WorkspaceDAO(hibernateFacade);
+			ActionDAO actionDAO = new ActionDAO(hibernateFacade);
 			GoogleAuthHandlerFactory googleAuthHandlerFactory = new GoogleAuthHandlerFactory(vertx, router, config);
 			
 			//// create routes
@@ -69,9 +72,9 @@ public class MainVerticle extends AbstractVerticle {
 			router.route().handler(SessionHandler.create(LocalSessionStore.create(vertx)).setCookieMaxAge(2147483647));
 			router.route().handler(FaviconHandler.create(vertx, "webroot/favicon.png"));
 			router.route("/api/*").handler(apiHandler::handle).failureHandler(apiHandler::failureHandle);
-			router.post("/api/quest").handler(new PostQuestHandler(hibernateFacade)::handle);
 			router.get("/api/user").handler(new GetUserHandler(webClient, userDAO)::handle);
-			router.put("/api/user").handler(new PutUserHandler(userDAO)::handle);
+			router.put("/api/workspace").handler(new PutWorkspaceHandler(workspaceDAO)::handle);
+			router.post("/api/action").handler(new PostActionHandler(actionDAO)::handle);
 
 			router.get("/login").handler(googleAuthHandlerFactory.getHandler());
 			router.get("/login").handler(context -> context.redirect("/"));

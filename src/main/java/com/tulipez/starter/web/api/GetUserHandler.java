@@ -31,10 +31,11 @@ public class GetUserHandler {
 	}
 	
 	public void handle(RoutingContext context) {
-		requestUserSpecif(context.user())
+		User vertxUser = context.user();
+		requestUserSpecif(vertxUser)
 			.compose(userSpecif -> userDAO.getUser(userSpecif))
 			.onSuccess(starterUser -> {
-				context.put("starter-user", starterUser);
+				vertxUser.attributes().put("starter-user", starterUser);
 				RoutingContextUtils.endJson(context, JsonObject.mapFrom(starterUser));
 			})
 			.onFailure(err -> RoutingContextUtils.endError(context, err));

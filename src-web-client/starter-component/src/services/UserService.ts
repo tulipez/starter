@@ -25,24 +25,6 @@ export class UserService {
 		});
 	}
 	
-	saveCurrentUser() {
-		return new Promise<void>((resolve, reject) => {
-			fetch('/api/user', {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(this._currentUser)
-			})
-	        .then(response => {
-				if(!response.ok) reject(new Error("saveCurrentUser failed"));
-				else resolve();
-			})
-	        .catch(error => {
-	            console.error('Error:', error);
-	            reject(new Error("saveCurrentUser failed"));
-	        });
-		});
-	}
-	
 	login() {
 		window.location.href="/login";
 	}
@@ -50,24 +32,6 @@ export class UserService {
 	logout() {
 		window.location.href="/logout";
 	}
-	
-	
-	
-	/*
-	return new Promise<void>(resolve => {
-		this._currentUser = {
-			name : "zulut",
-			given_name : "zulut",
-			family_name : "zulut",
-			picture : "https://picsum.photos/18/18",
-			email : "zulut@zulut.fr",
-			email_verified : true,
-			locale : "fr",
-		} as User;
-		resolve();
-	});
-	*/
-	
 }
 export const userServiceContext = createContext<UserService>('userService');
 

@@ -17,6 +17,8 @@ import { registerIconLibrary } from '@shoelace-style/shoelace/dist/utilities/ico
 import styles from './starter.styles.js';
 // import { IS_MOBILE, MatchMediaController } from '../../controllers/MatchMedia.js';
 import { UserService, userServiceContext } from '../../services/UserService.js';
+import { WorkspaceService, workspaceServiceContext } from '../../services/WorkspaceService.js';
+import { ActionService, actionServiceContext } from '../../services/ActionService.js';
 import '../login/login.js';
 import '../avatar/avatar.js';
 import '../menu/menu.js';
@@ -31,6 +33,12 @@ export class TzStarter extends LitElement {
 	
 	@provide({context: userServiceContext})
 	private userService = new UserService();
+	
+	@provide({context: workspaceServiceContext})
+	private workspaceService = new WorkspaceService(this.userService);
+	
+	@provide({context: actionServiceContext})
+	private actionService = new ActionService(this.workspaceService);
 	
 	@state()
 	initialized: boolean = false;

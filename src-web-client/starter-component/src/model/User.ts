@@ -1,4 +1,6 @@
 /* eslint-disable lines-between-class-members */
+import { Workspace } from './Workspace.js';
+
 export class User {
 	
     private _name: string = "";
@@ -22,8 +24,8 @@ export class User {
 	private _locale: string = "";
     public get locale(): string { return this._locale; }
 	
-	private _dark_mode: boolean = false;
-    public get dark_mode(): boolean { return this._dark_mode; }
-    public set dark_mode(value: boolean) { this._dark_mode = value; }
+	private _workspace: Workspace | undefined = undefined;
+    public get workspace(): Workspace | undefined { return this._workspace; }
+    public set workspace(value: Workspace | undefined) { this._workspace = value; }
     
 }

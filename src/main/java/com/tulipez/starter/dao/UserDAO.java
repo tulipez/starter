@@ -1,6 +1,8 @@
 package com.tulipez.starter.dao;
 
 import com.tulipez.starter.model.StarterUser;
+import com.tulipez.starter.model.Workspace;
+import com.tulipez.starter.util.JacksonUtils;
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
@@ -18,17 +20,22 @@ public class UserDAO {
 	}
 	
 	public Future<StarterUser> getUser(JsonObject userSpecif) {
-		return hibernateFacade
-		.findByAttributeValue(StarterUser.class , "sub" , userSpecif.getString("sub"))
-		.compose(user -> {
-			return user==null ?
-				hibernateFacade.persist(userSpecif.mapTo(StarterUser.class)):
-				hibernateFacade.merge(user.updateFrom(userSpecif));
-		});
-	}
-	
-	public Future<StarterUser> saveUser(StarterUser starterUser) {
-		return hibernateFacade.merge(starterUser);
+		return hibernateFacade.withTransaction(session -> 
+			session
+			.createQuery("select u from StarterUser u where u.sub = :sub", StarterUser.class)
+			.setParameter("sub", userSpecif.getString("sub"))
+			.getSingleResultOrNull()
+			.thenCompose(user -> {
+				if(user==null) {
+					StarterUser newUser = userSpecif.mapTo(StarterUser.class);
+					newUser.setWorkspace(new Workspace());
+					return session.persist(newUser).thenApply(v -> newUser);	
+				}
+				else {
+					return session.merge(JacksonUtils.updatePojo(user, userSpecif));
+				}
+			})
+		);
 	}
 	
 }
