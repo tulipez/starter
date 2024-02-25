@@ -84,7 +84,6 @@ export class TzMenu extends LitElement {
 	createAction() {
 		this.getDialogNewAction().hide();
 		this.actionService?.create({name: "toto"}).then(action => {
-			console.log(action.id);
 			console.log(action.name);
 		}).catch((error) => {
 			console.error(error);

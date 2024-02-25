@@ -22,10 +22,6 @@ export class ActionService {
 	        .then(data => {
 				const action: Action = data;
 				const currentWorkspace = this._workspaceService?.currentWorkspace;
-				
-				console.log(action);
-				console.log(currentWorkspace?.actions);
-				
 				currentWorkspace?.actions.push(action);
 	            resolve(action);
 	        })
