@@ -1,7 +1,6 @@
 package com.tulipez.starter.dao;
 
 import com.tulipez.starter.model.StarterUser;
-import com.tulipez.starter.model.Workspace;
 import com.tulipez.starter.util.JacksonUtils;
 
 import io.vertx.core.Future;
@@ -28,7 +27,6 @@ public class UserDAO {
 			.thenCompose(user -> {
 				if(user==null) {
 					StarterUser newUser = userSpecif.mapTo(StarterUser.class);
-					newUser.setWorkspace(new Workspace());
 					return session.persist(newUser).thenApply(v -> newUser);	
 				}
 				else {

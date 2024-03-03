@@ -13,33 +13,38 @@ import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import SlDrawer from '@shoelace-style/shoelace/dist/components/drawer/drawer.component.js';
 import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.component.js';
 
-import styles from './menu.styles.js';
+import styles from './menu-general.styles.js';
 
 import { WorkspaceService, workspaceServiceContext } from '../../services/WorkspaceService.js';
 import { ActionService, actionServiceContext } from '../../services/ActionService.js';
+import { Workspace } from '../../model/Workspace.js';
 
-export class TzMenu extends LitElement {
+export class TzMenuGeneral extends LitElement {
 	
     static styles = styles;
 	
     @consume({context: workspaceServiceContext})
     @state()
-	private workspaceService?: WorkspaceService;
+	workspaceService?: WorkspaceService;
 	
-    @consume({context: actionServiceContext})
+	@consume({context: actionServiceContext})
     @state()
-	private actionService?: ActionService;
+	actionService?: ActionService;
+	
+	private getWorkspace() : Workspace | undefined{
+		return this.workspaceService?.currentWorkspace;
+	}
 	
 	@state()
 	set darkMode(value: boolean) {
-		const currentWorkspace = this.workspaceService?.currentWorkspace;
+		const currentWorkspace = this.getWorkspace();
 		if(currentWorkspace) {
 			currentWorkspace.dark_mode = value;
 		}
 	}
 	
 	get darkMode() : boolean {
-		const currentWorkspace = this.workspaceService?.currentWorkspace;
+		const currentWorkspace = this.getWorkspace();
 		return currentWorkspace ? currentWorkspace.dark_mode : false;
 	}
 	
@@ -78,13 +83,12 @@ export class TzMenu extends LitElement {
 	toggleDarkMode() {
 		this.darkMode = !this.darkMode;
 		this.applyDarkMode();
-		this.workspaceService?.saveCurrentWorkspace();
+		this.workspaceService?.updateCurrentWorkspace();
 	}
 	
 	createAction() {
-		this.getDialogNewAction().hide();
-		this.actionService?.create({name: "toto"}).then(action => {
-			console.log(action.name);
+		this.actionService?.createAction({name: "tata"}).then(() => {
+			this.getDialogNewAction().hide();
 		}).catch((error) => {
 			console.error(error);
 		});

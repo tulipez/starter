@@ -29,7 +29,7 @@ public class ActionDAO {
 			Action newAction = createSpecif.mapTo(Action.class);
 			newAction.setWorkspace(workspace);
 			return session.persist(newAction).thenApply(v -> {
-				workspace.addAction(newAction);
+				workspace.getActions().add(newAction);
 				return newAction;
 			});
 		});

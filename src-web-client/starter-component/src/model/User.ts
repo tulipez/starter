@@ -1,8 +1,10 @@
 /* eslint-disable lines-between-class-members */
-import { Workspace } from './Workspace.js';
 
 export class User {
 	
+	private _id: number | undefined;
+    public get id(): number | undefined { return this._id; }
+    
     private _name: string = "";
     public get name(): string { return this._name; }
     
@@ -23,9 +25,5 @@ export class User {
     
 	private _locale: string = "";
     public get locale(): string { return this._locale; }
-	
-	private _workspace: Workspace | undefined = undefined;
-    public get workspace(): Workspace | undefined { return this._workspace; }
-    public set workspace(value: Workspace | undefined) { this._workspace = value; }
-    
+	    
 }

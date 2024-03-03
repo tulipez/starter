@@ -1,4 +1,4 @@
-package com.tulipez.starter.web.auth;
+package com.tulipez.starter.http.handlers;
 
 import java.util.List;
 
@@ -10,14 +10,15 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 
-public class GoogleAuthHandlerFactory {
+public class GoogleAuthHandler {
 	
 	private Vertx vertx;
 	private Router router;
 	private JsonObject config;
+	
 	private OAuth2Auth authProvider;
 	
-	public GoogleAuthHandlerFactory(Vertx vertx, Router router, JsonObject config) {
+	public GoogleAuthHandler(Vertx vertx, Router router, JsonObject config) {
 		this.vertx = vertx;
 		this.router = router;
 		this.config = config;
@@ -34,13 +35,13 @@ public class GoogleAuthHandlerFactory {
 		.onFailure(err -> {
 			context.response().end("ERROR revoke access_token : " + err.getMessage());
 			err.printStackTrace();
-			context.next();
 		});
 	}
 	
-	public OAuth2AuthHandler getHandler() {
+	public OAuth2AuthHandler createLoginHandler() {
 		return OAuth2AuthHandler.create(vertx, authProvider, config.getString("server.scheme") + "://" + config.getString("server.host") + ":" + config.getString("server.port") + config.getString("auth.google.callback.path"))
 		.setupCallback(router.route(config.getString("auth.google.callback.path")))
 		.withScopes(List.of("email", "profile", "openid"));
 	}
+	
 }

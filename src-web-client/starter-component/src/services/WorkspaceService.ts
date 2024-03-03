@@ -1,19 +1,13 @@
 /* eslint-disable lines-between-class-members */
 import { createContext } from '@lit/context';
 import { Workspace } from '../model/Workspace.js';
-import { UserService } from './UserService.js';
 
 export class WorkspaceService {
 	
-	private _userService: UserService;
+	private _currentWorkspace: Workspace | undefined;
+	get currentWorkspace() : Workspace | undefined { return this._currentWorkspace; }
 	
-	get currentWorkspace() : Workspace | undefined { return this._userService?.currentUser?.workspace; }
-	
-	constructor(userService: UserService) {
-		this._userService = userService;
-	}
-	
-	saveCurrentWorkspace() {
+	updateCurrentWorkspace() {
 		return new Promise<void>((resolve, reject) => {
 			fetch('/api/workspace', {
 				method: 'PUT',
@@ -27,6 +21,24 @@ export class WorkspaceService {
 	        .catch(error => {
 	            console.error('Error:', error);
 	            reject(new Error("saveCurrentWorkspace failed"));
+	        });
+		});
+	}
+	
+	loadCurrentWorkspace() {
+		return new Promise<void>((resolve, reject) => {
+			fetch('/api/workspace', {
+				method: 'GET',
+				headers: { 'Content-Type': 'application/json' }
+			})
+	        .then(response => response.ok ? response.json() : undefined)
+	        .then(data => {
+	            this._currentWorkspace = data;
+	            resolve();
+	        })
+	        .catch(error => {
+	            console.error('Error:', error);
+	            reject(new Error("login failed"));
 	        });
 		});
 	}

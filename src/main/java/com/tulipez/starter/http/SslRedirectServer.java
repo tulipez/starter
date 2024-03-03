@@ -1,4 +1,4 @@
-package com.tulipez.starter.web;
+package com.tulipez.starter.http;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;

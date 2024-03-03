@@ -1,39 +1,46 @@
 package com.tulipez.starter.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "tz_workspace")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Workspace {
 
-	@JsonIgnore
 	@Id @GeneratedValue
     private Integer id;
 	
-	@JsonIgnore
-	@OneToOne(mappedBy = "workspace", fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@NotNull
     private StarterUser user;
 
-	@OneToMany(mappedBy="workspace", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "workspace", fetch = FetchType.EAGER)
     private Set<Action> actions = new HashSet<Action>();
 
 	private boolean dark_mode;
+	
+	public Workspace() {
+	}
+	
+	public Workspace(StarterUser user) {
+		this.user = user;
+	}
 
 	public Integer getId() {
 		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public StarterUser getUser() {
@@ -48,14 +55,6 @@ public class Workspace {
 		return actions;
 	}
 
-	public void addAction(Action action) {
-		this.actions.add(action);
-	}
-	
-	public void removeAction(Action action) {
-		this.actions.remove(action);
-	}
-
 	public boolean isDark_mode() {
 		return dark_mode;
 	}
@@ -64,4 +63,15 @@ public class Workspace {
 		this.dark_mode = dark_mode;
 	}
 	
+	public @Override int hashCode() {
+		return Objects.hash(id);
+	}
+	
+	public @Override boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Workspace other = (Workspace) obj;
+		return id.equals(other.id);
+	}
 }

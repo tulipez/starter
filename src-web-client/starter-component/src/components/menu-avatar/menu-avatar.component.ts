@@ -13,29 +13,39 @@ import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import SlDrawer from '@shoelace-style/shoelace/dist/components/drawer/drawer.component.js';
 import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.component.js';
 
-import styles from './avatar.styles.js';
+import styles from './menu-avatar.styles.js';
 
-import { UserService, userServiceContext } from '../../services/UserService.js';
+import { WorkspaceService, workspaceServiceContext } from '../../services/WorkspaceService.js';
+import { Workspace } from '../../model/Workspace.js';
+import { User } from '../../model/User.js';
 
-export class TzAvatar extends LitElement {
+export class TzMenuAvatar extends LitElement {
 	
     static styles = styles;
     
-    @consume({context: userServiceContext})
+    @consume({context: workspaceServiceContext})
     @state()
-	private userService?: UserService;
+	private workspaceService?: WorkspaceService;
 	
-    getDrawerAvater() : SlDrawer {
+    private getDrawerAvater() : SlDrawer {
 		return this.renderRoot?.querySelector('.drawer-avatar') as SlDrawer;
 	}
 	
-    getDialogConfirmLogout() : SlDialog {
+    private getDialogConfirmLogout() : SlDialog {
 		return this.renderRoot?.querySelector('.confirm-logout') as SlDialog;
+	}
+	
+	private getWorkspace() : Workspace | undefined{
+		return this.workspaceService?.currentWorkspace;
+	}
+	
+	private getUser() : User | undefined{
+		return this.getWorkspace()?.user;
 	}
 	
     render() {
 		return html`
-		${!this.userService?.currentUser ?
+		${!this.workspaceService?.currentWorkspace?.user ?
 	      	html``:
 	      	html`
 	        <div>
@@ -44,7 +54,7 @@ export class TzAvatar extends LitElement {
 		    	>
 		    	
 					<sl-avatar
-					  	image="${this.userService?.currentUser.picture}"
+					  	image="${this.getUser()?.picture}"
 					  	loading="lazy"
 					></sl-avatar>
 					
@@ -86,7 +96,7 @@ export class TzAvatar extends LitElement {
 					<sl-button
 						slot="footer"
 						variant="primary"
-						@click="${this.userService?.logout}"
+						@click="${() => {window.location.href='/logout';}}"
 					>Se déconnecter</sl-button>
 					
 				</sl-dialog>

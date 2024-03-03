@@ -9,13 +9,12 @@ import com.tulipez.starter.dao.ActionDAO;
 import com.tulipez.starter.dao.HibernateFacade;
 import com.tulipez.starter.dao.UserDAO;
 import com.tulipez.starter.dao.WorkspaceDAO;
-import com.tulipez.starter.web.SslRedirectServer;
-import com.tulipez.starter.web.api.ApiHandler;
-import com.tulipez.starter.web.api.GetUserHandler;
-import com.tulipez.starter.web.api.PostActionHandler;
-import com.tulipez.starter.web.api.PutWorkspaceHandler;
-import com.tulipez.starter.web.api.SubDomainHandler;
-import com.tulipez.starter.web.auth.GoogleAuthHandlerFactory;
+import com.tulipez.starter.http.SslRedirectServer;
+import com.tulipez.starter.http.handlers.ActionHandler;
+import com.tulipez.starter.http.handlers.ApiHandler;
+import com.tulipez.starter.http.handlers.GoogleAuthHandler;
+import com.tulipez.starter.http.handlers.SubDomainHandler;
+import com.tulipez.starter.http.handlers.WorkspaceHandler;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -64,23 +63,25 @@ public class MainVerticle extends AbstractVerticle {
 			UserDAO userDAO = new UserDAO(hibernateFacade);
 			WorkspaceDAO workspaceDAO = new WorkspaceDAO(hibernateFacade);
 			ActionDAO actionDAO = new ActionDAO(hibernateFacade);
-			GoogleAuthHandlerFactory googleAuthHandlerFactory = new GoogleAuthHandlerFactory(vertx, router, config);
+			GoogleAuthHandler googleAuthHandler = new GoogleAuthHandler(vertx, router, config);
+			WorkspaceHandler workspaceHandler = new WorkspaceHandler(workspaceDAO, userDAO, webClient);
+			ActionHandler actionHandler = new ActionHandler(actionDAO);
 			
 			//// create routes
 			router.route().handler(SubDomainHandler.create(config.getString("server.host"))::handle);
 			router.route().handler(BodyHandler.create());
 			router.route().handler(SessionHandler.create(LocalSessionStore.create(vertx)).setCookieMaxAge(2147483647));
 			router.route().handler(FaviconHandler.create(vertx, "webroot/favicon.png"));
-			router.route("/api/*").handler(apiHandler::handle).failureHandler(apiHandler::failureHandle);
-			router.get("/api/user").handler(new GetUserHandler(webClient, userDAO)::handle);
-			router.put("/api/workspace").handler(new PutWorkspaceHandler(workspaceDAO)::handle);
-			router.post("/api/action").handler(new PostActionHandler(actionDAO)::handle);
-
-			router.get("/login").handler(googleAuthHandlerFactory.getHandler());
-			router.get("/login").handler(context -> context.redirect("/"));
 			
-			router.get("/logout").handler(googleAuthHandlerFactory::handleLogout);
+			router.get("/login").handler(googleAuthHandler.createLoginHandler());
+			router.get("/login").handler(context -> context.redirect("/"));
+			router.get("/logout").handler(googleAuthHandler::handleLogout);
 			router.get("/logout").handler(context -> context.redirect("/"));
+			
+			router.route("/api/*").handler(apiHandler::handle).failureHandler(apiHandler::failureHandle);
+			router.get("/api/workspace").handler(workspaceHandler::handleGet);
+			router.put("/api/workspace").handler(workspaceHandler::handlePut);
+			router.post("/api/action").handler(actionHandler::handlePost);
 			
 			router.get("/*").handler(StaticHandler.create().setCachingEnabled(false));
 

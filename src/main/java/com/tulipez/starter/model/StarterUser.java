@@ -2,29 +2,24 @@ package com.tulipez.starter.model;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "tz_starterUser")
 public class StarterUser {
 	
-	@JsonIgnore
 	@Id @GeneratedValue
     private Integer id;
 
 	@Column(unique=true)
 	@NotNull
 	private String sub;
-	
+
 	private String name;
 	
 	private String given_name;
@@ -40,16 +35,8 @@ public class StarterUser {
 	
 	private String locale;
 	
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "workspace_id", referencedColumnName = "id", nullable=false)
-    private Workspace workspace;
-	
 	public Integer getId() {
 		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getSub() {
@@ -116,14 +103,6 @@ public class StarterUser {
 		this.locale = locale;
 	}
 
-	public Workspace getWorkspace() {
-		return workspace;
-	}
-
-	public void setWorkspace(Workspace workspace) {
-		this.workspace = workspace;
-	}
-
 	public @Override int hashCode() {
 		return Objects.hash(id);
 	}
@@ -135,22 +114,5 @@ public class StarterUser {
 		StarterUser other = (StarterUser) obj;
 		return id.equals(other.id);
 	}
-	
-//	//TODO externaliser/automatiser/generaliser
-//	public StarterUser updateFrom(JsonObject userSpecif) throws JsonMappingException, JsonProcessingException {
-//		
-//		ObjectMapper objectMapper = new ObjectMapper();
-//		ObjectReader objectReader = objectMapper.readerForUpdating(this);
-//		return objectReader.readValue(userSpecif.encode());
-//		
-////		if(userSpecif.containsKey("name")) this.setName(userSpecif.getString("name"));
-////		if(userSpecif.containsKey("given_name")) this.setGiven_name(userSpecif.getString("given_name"));
-////		if(userSpecif.containsKey("family_name")) this.setFamily_name(userSpecif.getString("family_name"));
-////		if(userSpecif.containsKey("picture")) this.setPicture(userSpecif.getString("picture"));
-////		if(userSpecif.containsKey("email")) this.setEmail(userSpecif.getString("email"));
-////		if(userSpecif.containsKey("email_verified")) this.setEmail_verified(userSpecif.getBoolean("email_verified"));
-////		if(userSpecif.containsKey("locale")) this.setLocale(userSpecif.getString("locale"));
-////		return this;
-//	}
 	
 }

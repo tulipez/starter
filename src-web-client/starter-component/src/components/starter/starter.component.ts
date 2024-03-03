@@ -16,12 +16,12 @@ import { registerIconLibrary } from '@shoelace-style/shoelace/dist/utilities/ico
 
 import styles from './starter.styles.js';
 // import { IS_MOBILE, MatchMediaController } from '../../controllers/MatchMedia.js';
-import { UserService, userServiceContext } from '../../services/UserService.js';
 import { WorkspaceService, workspaceServiceContext } from '../../services/WorkspaceService.js';
 import { ActionService, actionServiceContext } from '../../services/ActionService.js';
 import '../login/login.js';
-import '../avatar/avatar.js';
-import '../menu/menu.js';
+import '../menu-avatar/menu-avatar.js';
+import '../menu-general/menu-general.js';
+import '../list-actions/list-actions.js';
 
 registerIconLibrary('lucide', {
 	resolver: name => `https://cdn.jsdelivr.net/npm/lucide-static/icons/${name}.svg`
@@ -31,11 +31,8 @@ export class TzStarter extends LitElement {
 	
 	static styles = styles;
 	
-	@provide({context: userServiceContext})
-	private userService = new UserService();
-	
 	@provide({context: workspaceServiceContext})
-	private workspaceService = new WorkspaceService(this.userService);
+	private workspaceService = new WorkspaceService();
 	
 	@provide({context: actionServiceContext})
 	private actionService = new ActionService(this.workspaceService);
@@ -56,26 +53,28 @@ export class TzStarter extends LitElement {
 	}
 
 	init() {
-		this.userService.loadCurrentUser().then(() => {
+		this.workspaceService.loadCurrentWorkspace().then(() => {
 			this.initialized = true;
 		}).catch((error) => {
 			console.error(error);
 		});
 	}
-	
+		
 	render() {
 		return html`
 		${!this.initialized ?
 	      	html``:
-	      	html`${!this.userService.currentUser ?
+	      	html`${!this.workspaceService.currentWorkspace ?
 		      	html`<tz-login></tz-login>`:
 		      	html`
 		      	<div class="application">
 					<div class="top-bar">
-						<tz-menu></tz-menu>
-						<tz-avatar></tz-avatar>
+						<tz-menu-general></tz-menu-general>
+						<tz-menu-avatar></tz-menu-avatar>
 					</div>
-					<div class="app-content"></div>
+					<div class="app-content">
+						<tz-list-actions></tz-list-actions>
+					</div>
 				</div>`
 	      	}`
       	}`;

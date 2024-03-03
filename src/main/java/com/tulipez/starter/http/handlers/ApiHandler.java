@@ -1,4 +1,4 @@
-package com.tulipez.starter.web.api;
+package com.tulipez.starter.http.handlers;
 
 import io.vertx.ext.auth.User;
 import io.vertx.ext.web.RoutingContext;
