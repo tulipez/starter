@@ -27,15 +27,18 @@ public class GoogleAuthHandler {
 	}
 	
 	public void handleLogout(RoutingContext context) {
-		authProvider.revoke(context.user(), "access_token")
-		.onSuccess(v -> {
-			context.clearUser();
-			context.next();
-		})
-		.onFailure(err -> {
-			context.response().end("ERROR revoke access_token : " + err.getMessage());
-			err.printStackTrace();
-		});
+		if(context.user()==null) context.redirect("/");
+		else {
+			authProvider.revoke(context.user(), "access_token")
+			.onComplete(res -> {
+				if(res.failed()) {
+					Throwable cause = res.cause();
+					if(cause!=null) cause.printStackTrace();
+				}
+				context.clearUser();
+				context.redirect("/");
+			});
+		}
 	}
 	
 	public OAuth2AuthHandler createLoginHandler() {

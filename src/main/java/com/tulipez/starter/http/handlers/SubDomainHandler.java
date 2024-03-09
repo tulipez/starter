@@ -18,10 +18,15 @@ public class SubDomainHandler {
 	
 	public void handle(RoutingContext context) {
 		String absoluteURI = context.request().absoluteURI();
-		if(!absoluteURI.contains(hostKey)) {
-			context.redirect(absoluteURI.replaceAll(regex, hostKey));
+		if(absoluteURI==null) {
+			context.fail(403);
 		}
-		else context.next();
+		else {
+			if(!absoluteURI.contains(hostKey)) {
+				context.redirect(absoluteURI.replaceAll(regex, hostKey));
+			}
+			else context.next();
+		}
 	}
 		
 }

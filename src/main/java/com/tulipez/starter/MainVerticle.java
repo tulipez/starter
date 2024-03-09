@@ -72,11 +72,10 @@ public class MainVerticle extends AbstractVerticle {
 			router.route().handler(BodyHandler.create());
 			router.route().handler(SessionHandler.create(LocalSessionStore.create(vertx)).setCookieMaxAge(2147483647));
 			router.route().handler(FaviconHandler.create(vertx, "webroot/favicon.png"));
-			
+
 			router.get("/login").handler(googleAuthHandler.createLoginHandler());
 			router.get("/login").handler(context -> context.redirect("/"));
 			router.get("/logout").handler(googleAuthHandler::handleLogout);
-			router.get("/logout").handler(context -> context.redirect("/"));
 			
 			router.route("/api/*").handler(apiHandler::handle).failureHandler(apiHandler::failureHandle);
 			router.get("/api/workspace").handler(workspaceHandler::handleGet);

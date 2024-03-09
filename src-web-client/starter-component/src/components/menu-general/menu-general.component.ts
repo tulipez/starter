@@ -1,3 +1,4 @@
+/* eslint-disable lit-a11y/no-autofocus */
 import { html, LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
 import { consume } from '@lit/context';
@@ -9,9 +10,11 @@ import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/input/input.js';
 
 import SlDrawer from '@shoelace-style/shoelace/dist/components/drawer/drawer.component.js';
 import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.component.js';
+import SlInput from '@shoelace-style/shoelace/dist/components/input/input.component.js';
 
 import styles from './menu-general.styles.js';
 
@@ -87,7 +90,8 @@ export class TzMenuGeneral extends LitElement {
 	}
 	
 	createAction() {
-		this.actionService?.createAction({name: "tata"}).then(() => {
+		const actionNameInput = this.renderRoot?.querySelector('#action_name_input') as SlInput;
+		this.actionService?.createAction({name: actionNameInput.value}).then(() => {
 			this.getDialogNewAction().hide();
 		}).catch((error) => {
 			console.error(error);
@@ -162,11 +166,15 @@ export class TzMenuGeneral extends LitElement {
 		</sl-drawer>
 		
 		<sl-dialog
-			label="Nouveau starter"
+			label="Nouvelle action"
 			class="dialog-create-starter"
 		>
 		
-			<div class="dialog-create-starter-form">formulaire</div>
+			<div class="dialog-create-starter-form">
+				<sl-input autofocus id="action_name_input"
+					label="Nom"
+				></sl-input>
+			</div>
 			
 			<sl-button
 				slot="footer"

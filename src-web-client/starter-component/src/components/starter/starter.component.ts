@@ -12,6 +12,8 @@ import '@shoelace-style/shoelace/dist/components/avatar/avatar.js';
 import '@shoelace-style/shoelace/dist/components/menu/menu.js';
 import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
 import '@shoelace-style/shoelace/dist/components/divider/divider.js';
+import '@shoelace-style/shoelace/dist/components/select/select.js';
+import '@shoelace-style/shoelace/dist/components/option/option.js';
 import { registerIconLibrary } from '@shoelace-style/shoelace/dist/utilities/icon-library.js';
 
 import styles from './starter.styles.js';
@@ -73,6 +75,15 @@ export class TzStarter extends LitElement {
 						<tz-menu-avatar></tz-menu-avatar>
 					</div>
 					<div class="app-content">
+						<div class="content-header">
+							<sl-button variant="text" size="large">
+							  <sl-icon slot="prefix"
+								name="calendar3"
+								style="font-size: 20px;"
+							  ></sl-icon>
+							  Aujourd'hui
+							</sl-button>
+						</div>
 						<tz-list-actions></tz-list-actions>
 					</div>
 				</div>`

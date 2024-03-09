@@ -24,7 +24,7 @@ export default css`
 	
 	.application {
 		width: 100%;
-	    height: 100%;
+	    min-height: 100%;
 	    display: flex;
         flex-direction: column;
     	align-items: stretch;
@@ -41,6 +41,16 @@ export default css`
 	
 	.app-content {
 		flex: 1;
+		background-color: var(--sl-color-gray-50);
+	}
+	
+	.content-header {
+		padding-left: 16px;
+	    background-color: var(--sl-panel-background-color);
+	    display: flex;
+	    justify-content: flex-start;
+	    align-items: center;
+	    gap: 10px;
 	}
 	
 	login-component {

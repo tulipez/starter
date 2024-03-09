@@ -12,13 +12,16 @@ export default css`
 
 	.menu-button {
 		font-size: 20px;
-	    margin: 20px 20px;
+	}
+	
+	.menu-button::part(base) {
+		padding: 16px;
 	}
 	
 	.dialog-create-starter::part(panel) {
 		
 	}
 	.dialog-create-starter-form {
-		height: 300px;
 	}	
+	
 `;
