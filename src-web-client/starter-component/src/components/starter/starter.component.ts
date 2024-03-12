@@ -17,7 +17,9 @@ import '@shoelace-style/shoelace/dist/components/option/option.js';
 import { registerIconLibrary } from '@shoelace-style/shoelace/dist/utilities/icon-library.js';
 
 import styles from './starter.styles.js';
+
 // import { IS_MOBILE, MatchMediaController } from '../../controllers/MatchMedia.js';
+import { HttpClient } from '../../HttpClient.js';
 import { WorkspaceService, workspaceServiceContext } from '../../services/WorkspaceService.js';
 import { ActionService, actionServiceContext } from '../../services/ActionService.js';
 import '../login/login.js';
@@ -33,11 +35,13 @@ export class TzStarter extends LitElement {
 	
 	static styles = styles;
 	
+	private httpClient: HttpClient;
+	
 	@provide({context: workspaceServiceContext})
-	private workspaceService = new WorkspaceService();
+	private workspaceService: WorkspaceService;
 	
 	@provide({context: actionServiceContext})
-	private actionService = new ActionService(this.workspaceService);
+	private actionService: ActionService;
 	
 	@state()
 	initialized: boolean = false;
@@ -51,10 +55,11 @@ export class TzStarter extends LitElement {
 	
 	constructor() {
 		super();
-		this.init();
-	}
-
-	init() {
+		
+		this.httpClient = new HttpClient();
+		this.workspaceService = new WorkspaceService(this.httpClient);
+		this.actionService = new ActionService(this.httpClient, this.workspaceService);
+		
 		this.workspaceService.loadCurrentWorkspace().then(() => {
 			this.initialized = true;
 		}).catch((error) => {

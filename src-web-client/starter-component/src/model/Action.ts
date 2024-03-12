@@ -12,7 +12,7 @@ export class Action {
     public get ratingValue(): number | undefined { return this._ratingValue; }
     public set ratingValue(value: number | undefined) { this._ratingValue = value; }
     
-	private _date: string | undefined;
-    public get date(): string | undefined { return this._date; }
-    public set date(value: string | undefined) { this._date = value; }
+	private _date: Date | undefined;
+    public get date(): Date | undefined { return this._date; }
+    public set date(value: Date | undefined) { this._date = value; }
 }

@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
 import { consume } from '@lit/context';
 
-import { IObserver } from '../../controllers/IObserver.js';
+import { IObserver } from '../../IObserver.js';
 import { WorkspaceService, workspaceServiceContext } from '../../services/WorkspaceService.js';
 import { ActionService, actionServiceContext, EVENT_ACTION_CREATED } from '../../services/ActionService.js';
 import { Action } from '../../model/Action.js';
