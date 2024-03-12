@@ -30,7 +30,7 @@ public class Workspace {
 	@OneToMany(mappedBy = "workspace", fetch = FetchType.EAGER)
     private Set<Action> actions = new HashSet<Action>();
 
-	private boolean dark_mode;
+	private boolean darkMode;
 	
 	public Workspace() {
 	}
@@ -55,12 +55,12 @@ public class Workspace {
 		return actions;
 	}
 
-	public boolean isDark_mode() {
-		return dark_mode;
+	public boolean isDarkMode() {
+		return darkMode;
 	}
 
-	public void setDark_mode(boolean dark_mode) {
-		this.dark_mode = dark_mode;
+	public void setDarkMode(boolean darkMode) {
+		this.darkMode = darkMode;
 	}
 	
 	public @Override int hashCode() {

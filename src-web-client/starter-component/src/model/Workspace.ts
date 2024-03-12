@@ -10,9 +10,9 @@ export class Workspace {
 	private _user: User | undefined;
     public get user(): User | undefined { return this._user; }
 	
-	private _dark_mode: boolean = false;
-    public get dark_mode(): boolean { return this._dark_mode; }
-    public set dark_mode(value: boolean) { this._dark_mode = value; }
+	private _darkMode: boolean = false;
+    public get darkMode(): boolean { return this._darkMode; }
+    public set darkMode(value: boolean) { this._darkMode = value; }
     
     private _actions: Action[] = [];
     public get actions(): Action[] { return this._actions; }

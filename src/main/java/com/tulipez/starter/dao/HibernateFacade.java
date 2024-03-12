@@ -11,6 +11,7 @@ import org.hibernate.reactive.stage.Stage.Session;
 import org.hibernate.service.ServiceRegistry;
 
 import com.tulipez.starter.model.Action;
+import com.tulipez.starter.model.ActionSeries;
 import com.tulipez.starter.model.StarterUser;
 import com.tulipez.starter.model.Workspace;
 
@@ -48,10 +49,10 @@ public class HibernateFacade {
 			hibernateConfiguration.addAnnotatedClass(StarterUser.class);
 			hibernateConfiguration.addAnnotatedClass(Workspace.class);
 			hibernateConfiguration.addAnnotatedClass(Action.class);
+			hibernateConfiguration.addAnnotatedClass(ActionSeries.class);
 
 			ServiceRegistry serviceRegistry = new ReactiveServiceRegistryBuilder().applySettings(hibernateConfiguration.getProperties()).build();
 			sessionFactory = hibernateConfiguration.buildSessionFactory(serviceRegistry).unwrap(Stage.SessionFactory.class);
-			
 			return (Void)null;
 		});
 	}

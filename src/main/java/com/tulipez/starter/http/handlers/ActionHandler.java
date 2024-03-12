@@ -21,9 +21,20 @@ public class ActionHandler {
 		else {
 			JsonObject createSpecif = context.body().asJsonObject();
 			actionDAO.createAction(selectedWorkspace, createSpecif)
-			.onSuccess(action -> RoutingContextUtils.endJson(context, JsonObject.mapFrom(action)))
-			.onFailure(err -> RoutingContextUtils.endError(context, err));
+			.onSuccess(action -> {
+				RoutingContextUtils.endJson(context, JsonObject.mapFrom(action));
+			})
+			.onFailure(err -> {
+				RoutingContextUtils.endError(context, err);
+			});
 		}
+	}
+	
+	public void handlePut(RoutingContext context) {
+		JsonObject updateSpecif = context.body().asJsonObject();
+		actionDAO.updateAction(updateSpecif)
+		.onSuccess(a -> RoutingContextUtils.endJson(context, JsonObject.mapFrom(a)))
+		.onFailure(err -> RoutingContextUtils.endError(context, err));
 	}
 	
 }

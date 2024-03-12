@@ -23,9 +23,9 @@ export class TzListActions extends LitElement {
 	private actionService?: ActionService;
 
 	private actionServiceObserver = <IObserver<Action>>{
+	    // eslint-disable-next-line @typescript-eslint/no-unused-vars
 	    notify: (message: string, action: Action) => {
 			if(message === EVENT_ACTION_CREATED) {
-				console.log("TzListActions : ", JSON.stringify(action));
 				this.requestUpdate();
 			}
 	    }

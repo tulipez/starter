@@ -1,5 +1,6 @@
 package com.tulipez.starter.model;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,6 +29,14 @@ public class Action {
 	@NotNull
     private Workspace workspace;
 	
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+    private ActionSeries series;
+	
+	private LocalDate date;
+
+	private Float ratingValue;
+
 	public Action() {}
 	
 	public Action(Workspace workspace) {
@@ -52,6 +61,30 @@ public class Action {
 
 	public void setWorkspace(Workspace workspace) {
 		this.workspace = workspace;
+	}
+	
+	public Float getRatingValue() {
+		return ratingValue;
+	}
+
+	public void setRatingValue(Float ratingValue) {
+		this.ratingValue = ratingValue;
+	}
+	
+	public ActionSeries getSeries() {
+		return series;
+	}
+
+	public void setSeries(ActionSeries series) {
+		this.series = series;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 
 	public @Override int hashCode() {

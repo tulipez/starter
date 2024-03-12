@@ -11,10 +11,14 @@ import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
+import '@shoelace-style/shoelace/dist/components/switch/switch.js';
+import '@shoelace-style/shoelace/dist/components/select/select.js';
+import '@shoelace-style/shoelace/dist/components/option/option.js';
 
 import SlDrawer from '@shoelace-style/shoelace/dist/components/drawer/drawer.component.js';
 import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.component.js';
 import SlInput from '@shoelace-style/shoelace/dist/components/input/input.component.js';
+import SlSelect from '@shoelace-style/shoelace/dist/components/select/select.component.js';
 
 import styles from './menu-general.styles.js';
 
@@ -42,13 +46,13 @@ export class TzMenuGeneral extends LitElement {
 	set darkMode(value: boolean) {
 		const currentWorkspace = this.getWorkspace();
 		if(currentWorkspace) {
-			currentWorkspace.dark_mode = value;
+			currentWorkspace.darkMode = value;
 		}
 	}
 	
 	get darkMode() : boolean {
 		const currentWorkspace = this.getWorkspace();
-		return currentWorkspace ? currentWorkspace.dark_mode : false;
+		return currentWorkspace ? currentWorkspace.darkMode : false;
 	}
 	
 	getDrawerMenu() : SlDrawer {
@@ -90,13 +94,20 @@ export class TzMenuGeneral extends LitElement {
 	}
 	
 	createAction() {
-		const actionNameInput = this.renderRoot?.querySelector('#action_name_input') as SlInput;
-		this.actionService?.createAction({name: actionNameInput.value}).then(() => {
+		const nameInput = this.renderRoot?.querySelector('.name-input') as SlInput;
+		const seriesSelect = this.renderRoot?.querySelector('.series-select') as SlSelect;
+		
+		this.actionService?.createAction({
+			name: nameInput.value,
+			series: (typeof seriesSelect.value === "string") ? seriesSelect.value : ""
+		}).then(() => {
 			this.getDialogNewAction().hide();
 		}).catch((error) => {
 			console.error(error);
 		});
 	}
+	
+	// TODO Factoriser "no-repeat", "all-days", etc (dans ActionService ?)
 	
     render() {
 		
@@ -156,7 +167,6 @@ export class TzMenuGeneral extends LitElement {
 			label="Nouveau starter"
 			placement="bottom"
 		>
-		
 			<sl-button
 				slot="footer"
 				variant="primary"
@@ -171,9 +181,18 @@ export class TzMenuGeneral extends LitElement {
 		>
 		
 			<div class="dialog-create-starter-form">
-				<sl-input autofocus id="action_name_input"
-					label="Nom"
+				<sl-input class="name-input"
+					filled
+					placeholder="Ajoutez un titre"
 				></sl-input>
+				<br />
+				<sl-select class="series-select"
+					filled
+					hoist
+					value="no-repeat">
+				    <sl-option value="no-repeat">Ne se répète pas</sl-option>
+				    <sl-option value="all-days">Tous les jours</sl-option>
+				</sl-select>
 			</div>
 			
 			<sl-button

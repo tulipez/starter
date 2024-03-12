@@ -7,7 +7,9 @@ export default {
   input: 'dist/src/components/starter/starter.js',
   output: [{ file:'../../src/main/resources/webroot/starter/bundle.js', format: 'es' }],
   plugins: [
-    resolve(),
+    resolve({
+		browser: true
+	}),
     commonjs(),
     css({
       output: 'bundle.css' 

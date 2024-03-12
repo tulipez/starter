@@ -1,28 +1,37 @@
 /* eslint-disable lines-between-class-members */
+import axios from 'axios';
 import { createContext } from '@lit/context';
 import { Workspace } from '../model/Workspace.js';
 
 export class WorkspaceService {
 	
+	// TODO faire un axiosService (init axios + gestion d'erreur + autre...)
+	// ou juste un errorHandler generic
+	
 	private _currentWorkspace: Workspace | undefined;
 	get currentWorkspace() : Workspace | undefined { return this._currentWorkspace; }
 	
 	updateCurrentWorkspace() {
-		return new Promise<void>((resolve, reject) => {
-			fetch('/api/workspace', {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(this.currentWorkspace)
-			})
-	        .then(response => {
-				if(!response.ok) reject(new Error("saveCurrentWorkspace failed"));
-				else resolve();
-			})
-	        .catch(error => {
-	            console.error('Error:', error);
-	            reject(new Error("saveCurrentWorkspace failed"));
-	        });
-		});
+		return axios.put<Workspace>('/api/workspace', this._currentWorkspace)
+	    .catch(error => {
+        	if (error.response) {
+		      // la requête a été faite et le code de réponse du serveur n’est pas dans
+		      // la plage 2xx
+		      console.log(error.response.data);
+		      console.log(error.response.status);
+		      console.log(error.response.headers);
+		    } else if (error.request) {
+		      // la requête a été faite mais aucune réponse n’a été reçue
+		      // `error.request` est une instance de XMLHttpRequest dans le navigateur
+		      // et une instance de http.ClientRequest avec node.js
+		      console.log(error.request);
+		    } else {
+		      // quelque chose s’est passé lors de la construction de la requête et cela
+		      // a provoqué une erreur
+		      console.log('Error', error.message);
+		    }
+		    console.log(error.config);
+        });
 	}
 	
 	loadCurrentWorkspace() {
@@ -53,24 +62,31 @@ export class WorkspaceService {
 			resolve();
 		});
 		*/
-
-		return new Promise<void>((resolve, reject) => {
-			fetch('/api/workspace', {
-				method: 'GET',
-				headers: { 'Content-Type': 'application/json' }
-			})
-	        .then(response => response.ok ? response.json() : undefined)
-	        .then(data => {
-	            this._currentWorkspace = data;
-	            console.log(JSON.stringify(this._currentWorkspace));
-	            resolve();
-	        })
-	        .catch(error => {
-	            console.error('Error:', error);
-	            reject(new Error("login failed"));
-	        });
-		});
-
+		
+		return axios.get<Workspace>('/api/workspace')
+	      .then(res => {
+	        this._currentWorkspace = res.data;
+	      })
+	      .catch(error => {
+            if (error.response) {
+		      // la requête a été faite et le code de réponse du serveur n’est pas dans
+		      // la plage 2xx
+		      console.log(error.response.data);
+		      console.log(error.response.status);
+		      console.log(error.response.headers);
+		    } else if (error.request) {
+		      // la requête a été faite mais aucune réponse n’a été reçue
+		      // `error.request` est une instance de XMLHttpRequest dans le navigateur
+		      // et une instance de http.ClientRequest avec node.js
+		      console.log(error.request);
+		    } else {
+		      // quelque chose s’est passé lors de la construction de la requête et cela
+		      // a provoqué une erreur
+		      console.log('Error', error.message);
+		    }
+		    console.log(error.config);
+        });
+		
 	}
 	
 }
