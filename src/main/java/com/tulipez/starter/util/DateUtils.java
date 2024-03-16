@@ -1,6 +1,8 @@
 package com.tulipez.starter.util;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.TimeZone;
 
 public class DateUtils {
@@ -16,6 +18,13 @@ public class DateUtils {
 	static {
 		dateFormat_millis_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 		dateFormat_millis_GMT.setTimeZone(TimeZone.getTimeZone("GMT"));
+	}
+	
+	public static long getCurrentDayEpochUTC() {
+		return LocalDate.now()
+	      .atStartOfDay()
+	      .toInstant(OffsetDateTime.now().getOffset())
+	      .toEpochMilli();
 	}
 	
 	public static String getDureeStringShort(long duree) {

@@ -1,7 +1,8 @@
 import axios from 'axios';
+// import { parseISO } from "date-fns";
 
 export class HttpClient {
-	
+
 	async get<T> (url: string): Promise<void | T> {
 		return axios.get<T>(url)
 	      .then(res => res.data)

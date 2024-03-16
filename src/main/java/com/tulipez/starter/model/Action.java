@@ -1,6 +1,7 @@
 package com.tulipez.starter.model;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,7 +34,7 @@ public class Action {
 	@ManyToOne(fetch = FetchType.LAZY)
     private ActionSeries series;
 	
-	private LocalDate date;
+	private Long date;
 
 	private Float ratingValue;
 
@@ -79,11 +80,11 @@ public class Action {
 		this.series = series;
 	}
 
-	public LocalDate getDate() {
+	public Long getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(Long date) {
 		this.date = date;
 	}
 

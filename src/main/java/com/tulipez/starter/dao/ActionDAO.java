@@ -1,6 +1,7 @@
 package com.tulipez.starter.dao;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -9,6 +10,7 @@ import org.hibernate.reactive.stage.Stage.Session;
 import com.tulipez.starter.model.Action;
 import com.tulipez.starter.model.ActionSeries;
 import com.tulipez.starter.model.Workspace;
+import com.tulipez.starter.util.DateUtils;
 import com.tulipez.starter.util.JacksonUtils;
 
 import io.vertx.core.Future;
@@ -43,7 +45,7 @@ public class ActionDAO {
 				Action newAction = new Action();
 				newAction.setWorkspace(workspace);
 				newAction.setName(createSpecif.getString("name"));
-				newAction.setDate(LocalDate.now());
+				newAction.setDate(DateUtils.getCurrentDayEpochUTC());
 				if(series!=null) {
 					newAction.setSeries(series);
 					series.getActions().add(newAction);

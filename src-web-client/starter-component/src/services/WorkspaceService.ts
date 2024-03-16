@@ -19,10 +19,12 @@ export class WorkspaceService {
 		return this.httpClient.put<Workspace>('/api/workspace', this._currentWorkspace);
 	}
 	
+	// TODO ne pas charger tout le contenu, principalement la liste des actions.
+	// faire du lazy load
 	async loadCurrentWorkspace() {
 		return this.httpClient.get<Workspace>('/api/workspace').then(workspace => {
 	        this._currentWorkspace = workspace || undefined;
-        })
+        });
 	}
 	
 }

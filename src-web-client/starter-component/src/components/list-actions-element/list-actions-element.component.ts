@@ -42,7 +42,6 @@ export class TzListActionsElement extends LitElement {
 			<sl-card>
 				<div class="card-content">
 				    ${this.action?.name}
-				    ${this.action?.date}
 				    <sl-rating
 				    	value="${this.action?.ratingValue}"
 				    	@sl-change="${this.onRatingChange}"

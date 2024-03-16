@@ -42,6 +42,22 @@ export class TzMenuGeneral extends LitElement {
 		return this.workspaceService?.currentWorkspace;
 	}
 	
+	// TODO Factoriser "no-repeat", "all-days", etc (dans ActionService ?)
+	
+	createAction() {
+		const nameInput = this.renderRoot?.querySelector('.name-input') as SlInput;
+		const seriesSelect = this.renderRoot?.querySelector('.series-select') as SlSelect;
+		
+		this.actionService?.createAction({
+			name: nameInput.value,
+			series: (typeof seriesSelect.value === "string") ? seriesSelect.value : ""
+		}).then(() => {
+			this.getDialogNewAction().hide();
+		}).catch((error) => {
+			console.error(error);
+		});
+	}
+	
 	@state()
 	set darkMode(value: boolean) {
 		const currentWorkspace = this.getWorkspace();
@@ -53,18 +69,6 @@ export class TzMenuGeneral extends LitElement {
 	get darkMode() : boolean {
 		const currentWorkspace = this.getWorkspace();
 		return currentWorkspace ? currentWorkspace.darkMode : false;
-	}
-	
-	getDrawerMenu() : SlDrawer {
-		return this.renderRoot?.querySelector('.drawer-menu') as SlDrawer;
-	}
-	
-	getDrawerNewAction() : SlDrawer {
-		return this.renderRoot?.querySelector('.drawer-create-starter') as SlDrawer;
-	}
-	
-	getDialogNewAction() : SlDialog {
-		return this.renderRoot?.querySelector('.dialog-create-starter') as SlDialog;
 	}
 	
 	// TODO faire un darkModeController
@@ -93,21 +97,126 @@ export class TzMenuGeneral extends LitElement {
 		this.workspaceService?.updateCurrentWorkspace();
 	}
 	
-	createAction() {
-		const nameInput = this.renderRoot?.querySelector('.name-input') as SlInput;
-		const seriesSelect = this.renderRoot?.querySelector('.series-select') as SlSelect;
-		
-		this.actionService?.createAction({
-			name: nameInput.value,
-			series: (typeof seriesSelect.value === "string") ? seriesSelect.value : ""
-		}).then(() => {
-			this.getDialogNewAction().hide();
-		}).catch((error) => {
-			console.error(error);
-		});
+	getDrawerMenu() : SlDrawer {
+		return this.renderRoot?.querySelector('.drawer-menu') as SlDrawer;
 	}
 	
-	// TODO Factoriser "no-repeat", "all-days", etc (dans ActionService ?)
+	getDrawerNewAction() : SlDrawer {
+		return this.renderRoot?.querySelector('.drawer-create-starter') as SlDrawer;
+	}
+	
+	getDialogNewAction() : SlDialog {
+		return this.renderRoot?.querySelector('.dialog-create-starter') as SlDialog;
+	}
+	
+	renderMenuButton() {
+		return html`
+			<sl-icon-button
+				@click="${() => {this.getDrawerMenu().show();}}"
+				class="menu-button"
+				library="lucide"
+				name="menu"
+				label="Settings"
+			></sl-icon-button>
+		`;
+	}
+	
+	renderDrawerMenu() {
+		return html`
+			<sl-drawer
+				class="drawer-menu"
+				label="Starter"
+				placement="start"
+			>
+			
+				<sl-icon-button
+					class="dark-mode-button"
+					slot="header-actions"
+					library="lucide"
+					name="${this.darkMode ? "sun" : "moon"}"
+					@click=${this.toggleDarkMode}
+				></sl-icon-button>
+				
+				<sl-menu-item
+					value="create_starter"
+					@click="${() => {
+						this.getDrawerMenu().hide();
+						this.getDialogNewAction().show();
+					}}"
+				>Créer une nouvelle action
+					
+					<sl-icon slot="prefix"
+						library="lucide"
+						name="plus"
+						style="font-size:
+						20px;"
+					></sl-icon>
+					
+				</sl-menu-item>
+				
+				<sl-button
+					slot="footer"
+					variant="primary"
+					@click="${() => {this.getDrawerMenu().hide();}}"
+				>Fermer</sl-button>
+				
+			</sl-drawer>
+		`;
+	}
+	
+	renderDrawerCreateStarter() {
+		return html`
+			<sl-drawer
+				class="drawer-create-starter"
+				label="Nouveau starter"
+				placement="bottom"
+			>
+				<sl-button
+					slot="footer"
+					variant="primary"
+					@click="${() => {this.getDrawerNewAction().hide();}}"
+				>Créer</sl-button>
+			
+			</sl-drawer>
+		`;
+	}
+	
+	renderDialogCreateStarter() {
+		return html`
+			<sl-dialog
+				label="Nouvelle action"
+				class="dialog-create-starter"
+			>
+			
+				<div class="dialog-create-starter-form">
+					<sl-input class="name-input"
+						filled
+						placeholder="Ajoutez un titre"
+					></sl-input>
+					<br />
+					<sl-select class="series-select"
+						filled
+						hoist
+						value="no-repeat">
+					    <sl-option value="no-repeat">Ne se répète pas</sl-option>
+					    <sl-option value="all-days">Tous les jours</sl-option>
+					</sl-select>
+				</div>
+				
+				<sl-button
+					slot="footer"
+					@click="${() => {this.getDialogNewAction().hide();}}"
+				>Annuler</sl-button>
+				
+				<sl-button
+					slot="footer"
+					variant="primary"
+					@click="${this.createAction}"
+				>Enregistrer</sl-button>
+			
+			</sl-dialog>
+		`;
+	}
 	
     render() {
 		
@@ -115,98 +224,10 @@ export class TzMenuGeneral extends LitElement {
 		this.applyDarkMode();
 		
         return html`
-    	<sl-icon-button
-			@click="${() => {this.getDrawerMenu().show();}}"
-			class="menu-button"
-			library="lucide"
-			name="menu"
-			label="Settings"
-		></sl-icon-button>
-				
-		<sl-drawer
-			class="drawer-menu"
-			label="Starter"
-			placement="start"
-		>
-		
-			<sl-icon-button
-				class="dark-mode-button"
-				slot="header-actions"
-				library="lucide"
-				name="${this.darkMode ? "sun" : "moon"}"
-				@click=${this.toggleDarkMode}
-			></sl-icon-button>
-			
-			<sl-menu-item
-				value="create_starter"
-				@click="${() => {
-					this.getDrawerMenu().hide();
-					this.getDialogNewAction().show();
-				}}"
-			>Créer une nouvelle action
-				
-				<sl-icon slot="prefix"
-					library="lucide"
-					name="plus"
-					style="font-size:
-					20px;"
-				></sl-icon>
-				
-			</sl-menu-item>
-			
-			<sl-button
-				slot="footer"
-				variant="primary"
-				@click="${() => {this.getDrawerMenu().hide();}}"
-			>Fermer</sl-button>
-			
-		</sl-drawer>
-				
-		<sl-drawer
-			class="drawer-create-starter"
-			label="Nouveau starter"
-			placement="bottom"
-		>
-			<sl-button
-				slot="footer"
-				variant="primary"
-				@click="${() => {this.getDrawerNewAction().hide();}}"
-			>Créer</sl-button>
-		
-		</sl-drawer>
-		
-		<sl-dialog
-			label="Nouvelle action"
-			class="dialog-create-starter"
-		>
-		
-			<div class="dialog-create-starter-form">
-				<sl-input class="name-input"
-					filled
-					placeholder="Ajoutez un titre"
-				></sl-input>
-				<br />
-				<sl-select class="series-select"
-					filled
-					hoist
-					value="no-repeat">
-				    <sl-option value="no-repeat">Ne se répète pas</sl-option>
-				    <sl-option value="all-days">Tous les jours</sl-option>
-				</sl-select>
-			</div>
-			
-			<sl-button
-				slot="footer"
-				@click="${() => {this.getDialogNewAction().hide();}}"
-			>Annuler</sl-button>
-			
-			<sl-button
-				slot="footer"
-				variant="primary"
-				@click="${this.createAction}"
-			>Enregistrer</sl-button>
-		
-		</sl-dialog>
+	    	${this.renderMenuButton()}
+	    	${this.renderDrawerMenu()}
+			${this.renderDrawerCreateStarter()}
+			${this.renderDialogCreateStarter()}
 		`;
     }
 }

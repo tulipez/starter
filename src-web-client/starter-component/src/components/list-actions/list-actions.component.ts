@@ -40,12 +40,26 @@ export class TzListActions extends LitElement {
 		super.disconnectedCallback();
 		this.actionService?.unsubscribe(this.actionServiceObserver);
 	}
+	
+	// faire un DateUtils
+	private getTodayActions() : Action[] {
+		const currentWorkspace = this.workspaceService?.currentWorkspace;
+		if(!currentWorkspace) return [];
+		if(!currentWorkspace.actions) return [];
+
+		const currentDate : Date = new Date();
+		currentDate.setUTCHours(0,0,0,0);
+		const currentDayEpochUTC = currentDate.getTime();
+		
+		return currentWorkspace.actions.filter(action => action.date === currentDayEpochUTC);
+	}
 	 
     render() {
         return html`
-        ${this.workspaceService?.currentWorkspace?.actions.map((action) =>
-	    	html`<tz-list-actions-element .action=${action}></tz-list-actions-element>`
-	    )}
+        ${this.getTodayActions()
+        	.map(action =>
+		    	html`<tz-list-actions-element .action=${action}></tz-list-actions-element>`
+		    )}
         `;
     }
 }

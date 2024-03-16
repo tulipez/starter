@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tulipez.starter.common.log.StdLogger;
 import com.tulipez.starter.dao.ActionDAO;
 import com.tulipez.starter.dao.HibernateFacade;
@@ -28,7 +25,6 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.core.net.PemKeyCertOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.client.WebClient;
@@ -53,11 +49,6 @@ public class MainVerticle extends AbstractVerticle {
 			
 			//// init TimeZone
 			TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-			
-			//// init jackson
-			ObjectMapper objectMapper = DatabindCodec.mapper();
-			objectMapper.registerModule(new JavaTimeModule());
-			objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 			
 			//// init log
 			File consoleLogFile = new File(new File("log"), "console.log");

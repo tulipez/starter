@@ -27,14 +27,6 @@ export class TzMenuAvatar extends LitElement {
     @state()
 	private workspaceService?: WorkspaceService;
 	
-    private getDrawerAvater() : SlDrawer {
-		return this.renderRoot?.querySelector('.drawer-avatar') as SlDrawer;
-	}
-	
-    private getDialogConfirmLogout() : SlDialog {
-		return this.renderRoot?.querySelector('.confirm-logout') as SlDialog;
-	}
-	
 	private getWorkspace() : Workspace | undefined{
 		return this.workspaceService?.currentWorkspace;
 	}
@@ -43,63 +35,86 @@ export class TzMenuAvatar extends LitElement {
 		return this.getWorkspace()?.user;
 	}
 	
+    private getDrawerAvater() : SlDrawer {
+		return this.renderRoot?.querySelector('.drawer-avatar') as SlDrawer;
+	}
+	
+    private getDialogConfirmLogout() : SlDialog {
+		return this.renderRoot?.querySelector('.confirm-logout') as SlDialog;
+	}
+	
+	renderAvatarButton() {
+		return html`
+			<button class="avatar-button" type="button"
+	    		@click="${() => {this.getDrawerAvater().show();}}"
+	    	>
+	    	
+				<sl-avatar
+				  	image="${this.getUser()?.picture}"
+				  	loading="lazy"
+				></sl-avatar>
+				
+			</button>
+		`;
+	}
+	
+	renderDrawerAvater() {
+		return html`
+			<sl-drawer class="drawer-avatar" label="Profil">
+				
+				<sl-menu-item
+					value="logout"
+					@click="${() => {this.getDialogConfirmLogout().show();}}"
+				>Se déconnecter
+				
+					<sl-icon
+						slot="prefix"
+						library="lucide"
+						name="log-out"
+						style="font-size: 20px;"
+					></sl-icon>
+					
+				</sl-menu-item>
+				
+				<sl-button
+					slot="footer"
+					variant="primary"
+					@click="${() => {this.getDrawerAvater().hide();}}"
+				>Fermer</sl-button>
+			
+			</sl-drawer>
+		`;
+	}
+	
+	renderDialogConfirmLogout() {
+		return html`
+			<sl-dialog class="confirm-logout" label="Déconnexion">
+				Voulez-vous continuer?
+				
+				<sl-button
+					slot="footer"
+					@click="${() => {this.getDialogConfirmLogout().hide();}}"
+				>Annuler</sl-button>
+				
+				<sl-button
+					slot="footer"
+					variant="primary"
+					@click="${() => {window.location.href='/logout';}}"
+				>Se déconnecter</sl-button>
+				
+			</sl-dialog>
+		`;
+	}
+	
     render() {
 		return html`
 		${!this.workspaceService?.currentWorkspace?.user ?
 	      	html``:
 	      	html`
 	        <div>
-		    	<button class="avatar-button" type="button"
-		    		@click="${() => {this.getDrawerAvater().show();}}"
-		    	>
-		    	
-					<sl-avatar
-					  	image="${this.getUser()?.picture}"
-					  	loading="lazy"
-					></sl-avatar>
-					
-				</button>
-				
-				<sl-drawer class="drawer-avatar" label="Profil">
-				
-					<sl-menu-item
-						value="logout"
-						@click="${() => {this.getDialogConfirmLogout().show();}}"
-					>Se déconnecter
-					
-						<sl-icon
-							slot="prefix"
-							library="lucide"
-							name="log-out"
-							style="font-size: 20px;"
-						></sl-icon>
-						
-					</sl-menu-item>
-					
-					<sl-button
-						slot="footer"
-						variant="primary"
-						@click="${() => {this.getDrawerAvater().hide();}}"
-					>Fermer</sl-button>
-				
-				</sl-drawer>
-				
-				<sl-dialog class="confirm-logout" label="Déconnexion">
-				
-					Voulez-vous continuer?
-					
-					<sl-button
-						slot="footer"
-						@click="${() => {this.getDialogConfirmLogout().hide();}}"
-					>Annuler</sl-button>
-					
-					<sl-button
-						slot="footer"
-						variant="primary"
-						@click="${() => {window.location.href='/logout';}}"
-					>Se déconnecter</sl-button>
-					
-				</sl-dialog>
+				${this.renderAvatarButton()}
+				${this.renderDrawerAvater()}
+				${this.renderDialogConfirmLogout()}
 			</div>
 			`
       	}`;
