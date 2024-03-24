@@ -1,8 +1,8 @@
 package com.tulipez.starter.http.handlers;
 
-import com.tulipez.starter.dao.UserDAO;
-import com.tulipez.starter.dao.WorkspaceDAO;
 import com.tulipez.starter.model.Workspace;
+import com.tulipez.starter.services.UserService;
+import com.tulipez.starter.services.WorkspaceService;
 import com.tulipez.starter.util.JacksonUtils;
 import com.tulipez.starter.util.RoutingContextUtils;
 
@@ -15,13 +15,13 @@ import io.vertx.ext.web.codec.BodyCodec;
 
 public class WorkspaceHandler {
 
-	private WorkspaceDAO workspaceDAO;
+	private WorkspaceService workspaceService;
 	private WebClient webClient;
-	private UserDAO userDAO;
+	private UserService userService;
 	
-	public WorkspaceHandler(WorkspaceDAO workspaceDAO, UserDAO userDAO, WebClient webClient) {
-		this.workspaceDAO = workspaceDAO;
-		this.userDAO = userDAO;
+	public WorkspaceHandler(WorkspaceService workspaceService, UserService userService, WebClient webClient) {
+		this.workspaceService = workspaceService;
+		this.userService = userService;
 		this.webClient = webClient;
 	}
 	
@@ -38,9 +38,9 @@ public class WorkspaceHandler {
 	public void handleGet(RoutingContext context) {
 		User vertxUser = context.user();
 		requestUserSpecif(vertxUser)
-		.compose(userSpecif -> userDAO.getUser(userSpecif))
+		.compose(userSpecif -> userService.getUser(userSpecif))
 		.compose(starterUser -> {
-			return workspaceDAO.getWorkspaces(starterUser);
+			return workspaceService.getWorkspaces(starterUser);
 		})
 		.onSuccess(workspaceList -> {
 			
@@ -61,7 +61,7 @@ public class WorkspaceHandler {
 		else {
 			JsonObject updateSpecif = context.body().asJsonObject();
 			updateSpecif.remove("actions");
-			workspaceDAO.updateWorkspace(JacksonUtils.updatePojo(selectedWorkspace, updateSpecif))
+			workspaceService.updateWorkspace(JacksonUtils.updatePojo(selectedWorkspace, updateSpecif))
 			.onSuccess(w -> RoutingContextUtils.endJson(context, JsonObject.mapFrom(w)))
 			.onFailure(err -> RoutingContextUtils.endError(context, err));
 		}

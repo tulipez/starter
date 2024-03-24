@@ -1,5 +1,6 @@
-package com.tulipez.starter.dao;
+package com.tulipez.starter.services;
 
+import com.tulipez.starter.HibernateFacade;
 import com.tulipez.starter.model.StarterUser;
 import com.tulipez.starter.util.JacksonUtils;
 
@@ -10,11 +11,11 @@ import io.vertx.core.json.JsonObject;
 //TODO commentaires
 //TODO tests
 
-public class UserDAO {
+public class UserService {
 	
 	private HibernateFacade hibernateFacade;
 	
-	public UserDAO(HibernateFacade hibernateFacade) {
+	public UserService(HibernateFacade hibernateFacade) {
 		this.hibernateFacade = hibernateFacade;
 	}
 	

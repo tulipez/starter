@@ -15,10 +15,16 @@ public class SslRedirectServer {
 	public Future<HttpServer> start() {
 		return vertx.createHttpServer()
 		.requestHandler(r -> {
-			r.response()
-			.setStatusCode(301)
-			.putHeader("Location", r.absoluteURI().replace("http", "https"))
-			.end();
+			String absoluteURI = r.absoluteURI();
+			if(absoluteURI==null) {
+				r.response().setStatusCode(500).end();
+			}
+			else {
+				r.response()
+				.setStatusCode(301)
+				.putHeader("Location", absoluteURI.replace("http", "https"))
+				.end();
+			}
 		})
 		.listen(80)
 		.onSuccess(v -> System.out.println("SslRedirectServer started"));

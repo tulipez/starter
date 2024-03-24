@@ -1,4 +1,4 @@
-package com.tulipez.starter.dao;
+package com.tulipez.starter;
 
 import java.util.Properties;
 import java.util.concurrent.CompletionStage;
@@ -62,8 +62,12 @@ public class HibernateFacade {
 	}
 	
 	public <T> Future<T> withTransaction(Function<Session, CompletionStage<T>> work) {
-		return Future.fromCompletionStage(sessionFactory.withTransaction(
-				session -> work.apply(session)));
+		return Future.fromCompletionStage(sessionFactory.withTransaction(session -> {
+			return work.apply(session).exceptionally(e -> {
+				e.printStackTrace();
+				return null;
+			});
+		}));
 	}
 	
 }

@@ -1,8 +1,9 @@
-package com.tulipez.starter.dao;
+package com.tulipez.starter.services;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import com.tulipez.starter.HibernateFacade;
 import com.tulipez.starter.model.StarterUser;
 import com.tulipez.starter.model.Workspace;
 
@@ -12,11 +13,11 @@ import io.vertx.core.Future;
 //TODO commentaires
 //TODO tests
 
-public class WorkspaceDAO {
+public class WorkspaceService {
 	
 	private HibernateFacade hibernateFacade;
 	
-	public WorkspaceDAO(HibernateFacade hibernateFacade) {
+	public WorkspaceService(HibernateFacade hibernateFacade) {
 		this.hibernateFacade = hibernateFacade;
 	}
 	

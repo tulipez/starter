@@ -1,7 +1,5 @@
 package com.tulipez.starter.model;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -38,12 +36,6 @@ public class Action {
 
 	private Float ratingValue;
 
-	public Action() {}
-	
-	public Action(Workspace workspace) {
-		this.workspace = workspace;
-	}
-	
 	public Integer getId() {
 		return id;
 	}

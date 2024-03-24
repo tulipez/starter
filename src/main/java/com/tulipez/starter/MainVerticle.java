@@ -6,16 +6,15 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.tulipez.starter.common.log.StdLogger;
-import com.tulipez.starter.dao.ActionDAO;
-import com.tulipez.starter.dao.HibernateFacade;
-import com.tulipez.starter.dao.UserDAO;
-import com.tulipez.starter.dao.WorkspaceDAO;
 import com.tulipez.starter.http.SslRedirectServer;
 import com.tulipez.starter.http.handlers.ActionHandler;
 import com.tulipez.starter.http.handlers.ApiHandler;
 import com.tulipez.starter.http.handlers.GoogleAuthHandler;
 import com.tulipez.starter.http.handlers.SubDomainHandler;
 import com.tulipez.starter.http.handlers.WorkspaceHandler;
+import com.tulipez.starter.services.ActionService;
+import com.tulipez.starter.services.UserService;
+import com.tulipez.starter.services.WorkspaceService;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -62,14 +61,16 @@ public class MainVerticle extends AbstractVerticle {
 			
 			//// create dependencies
 			WebClient webClient = WebClient.create(vertx);
+			
 			HibernateFacade hibernateFacade = new HibernateFacade(vertx, config);
+			UserService userService = new UserService(hibernateFacade);
+			WorkspaceService workspaceService = new WorkspaceService(hibernateFacade);
+			ActionService actionService = new ActionService(hibernateFacade);
+
 			ApiHandler apiHandler = new ApiHandler();
-			UserDAO userDAO = new UserDAO(hibernateFacade);
-			WorkspaceDAO workspaceDAO = new WorkspaceDAO(hibernateFacade);
-			ActionDAO actionDAO = new ActionDAO(hibernateFacade);
 			GoogleAuthHandler googleAuthHandler = new GoogleAuthHandler(vertx, router, config);
-			WorkspaceHandler workspaceHandler = new WorkspaceHandler(workspaceDAO, userDAO, webClient);
-			ActionHandler actionHandler = new ActionHandler(actionDAO);
+			WorkspaceHandler workspaceHandler = new WorkspaceHandler(workspaceService, userService, webClient);
+			ActionHandler actionHandler = new ActionHandler(actionService);
 			
 			//// create routes
 			router.route().handler(SubDomainHandler.create(config.getString("server.host"))::handle);
@@ -112,6 +113,13 @@ public class MainVerticle extends AbstractVerticle {
 			// Hibernate
 			startList.add(hibernateFacade.init()
 					.onSuccess(v -> System.out.println("Hibernate initialized")));
+			
+			// scheduler
+			ScheduleDailyVerticle schedulerVerticle = new ScheduleDailyVerticle(() -> {
+				actionService.createActionsFromAllSeries();
+			});
+			
+			startList.add(vertx.deployVerticle(schedulerVerticle));
 			
 			//// return
 			Future.all(startList).onComplete(ar -> {
